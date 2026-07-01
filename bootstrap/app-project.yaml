@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: workloads
+  labels:
+    kubernetes.io/metadata.name: workloads
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: platform-workloads
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Platform Workloads Project
+  sourceRepos:
+  - 'https://github.com/gusLopezC-DevOps/backstage-gitops.git'
+  destinations:
+  - namespace: workloads
+    server: https://kubernetes.default.svc
+    name: '*'
+  clusterResourceWhitelist:
+  - group: ''
+    kind: Namespace
+  namespaceResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  orphanedResources:
+    warn: true

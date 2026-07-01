@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-backstage-ingress
+  namespace: workloads
+spec:
+  podSelector:
+    matchLabels:
+      app: backstage
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kong
+    ports:
+    - protocol: TCP
+      port: 7007
