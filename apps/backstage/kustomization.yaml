@@ -5,7 +5,6 @@ resources:
 - service.yaml
 - ingress.yaml
 - certificate.yaml
-- secret.yaml
 - k8s-rbac.yaml
 - postgres
 - network-policies
