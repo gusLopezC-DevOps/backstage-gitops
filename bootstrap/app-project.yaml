@@ -15,7 +15,7 @@ metadata:
 spec:
   description: Platform Workloads Project
   sourceRepos:
-  - 'https://github.com/gusLopezC-DevOps/backstage-gitops.git'
+  - '*'
   destinations:
   - namespace: workloads
     server: https://kubernetes.default.svc
