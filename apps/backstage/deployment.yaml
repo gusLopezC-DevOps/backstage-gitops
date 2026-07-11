@@ -54,6 +54,8 @@ spec:
               secretKeyRef:
                 name: postgres-sealed
                 key: POSTGRES_PASSWORD
+          - name: NODE_OPTIONS
+            value: "--no-node-snapshot"
         readinessProbe:
           httpGet:
             path: /
