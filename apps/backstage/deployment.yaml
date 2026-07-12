@@ -68,6 +68,25 @@ spec:
             port: 7007
           initialDelaySeconds: 60
           periodSeconds: 15
+        volumeMounts:
+        - mountPath: /app/templates/k8s-manifests/template.yaml
+          name: template-root
+          subPath: template.yaml
+        - mountPath: /app/templates/k8s-manifests/crossplane-skeleton/claim.yaml
+          name: crossplane-skeleton
+          subPath: claim.yaml
+        - mountPath: /app/templates/k8s-manifests/crossplane-skeleton/kustomization.yaml
+          name: crossplane-skeleton
+          subPath: kustomization.yaml
+        - mountPath: /app/templates/k8s-manifests/crossplane-skeleton/catalog-info.yaml
+          name: crossplane-skeleton
+          subPath: catalog-info.yaml
+        - mountPath: /app/plugins/custom-actions.cjs.js
+          name: custom-actions
+          subPath: custom-actions.cjs.js
+        - mountPath: /app/packages/backend/dist/index.cjs.js
+          name: backend-index
+          subPath: index.cjs.js
         resources:
           requests:
             memory: 512Mi
@@ -75,3 +94,20 @@ spec:
           limits:
             memory: 1Gi
             cpu: 1000m
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: backstage-template-root
+        name: template-root
+      - configMap:
+          defaultMode: 420
+          name: backstage-crossplane-skeleton
+        name: crossplane-skeleton
+      - configMap:
+          defaultMode: 420
+          name: backstage-custom-actions
+        name: custom-actions
+      - configMap:
+          defaultMode: 420
+          name: backstage-backend-index
+        name: backend-index
