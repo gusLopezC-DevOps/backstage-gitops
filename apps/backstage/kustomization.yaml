@@ -6,5 +6,6 @@ resources:
 - ingress.yaml
 - certificate.yaml
 - k8s-rbac.yaml
+- composition.yaml
 - postgres
 - network-policies

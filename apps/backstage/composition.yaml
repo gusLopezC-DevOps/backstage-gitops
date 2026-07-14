@@ -1,0 +1,201 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: xlocaldeployments.example.crossplane.io
+  labels:
+    provider: kubernetes
+    type: deployment
+spec:
+  compositeTypeRef:
+    apiVersion: example.crossplane.io/v1alpha1
+    kind: XLocalDeployment
+  mode: Pipeline
+  pipeline:
+  - functionRef:
+      name: function-patch-and-transform
+    input:
+      apiVersion: pt.fn.crossplane.io/v1beta1
+      kind: Resources
+      resources:
+      - base:
+          apiVersion: kubernetes.crossplane.io/v1alpha1
+          kind: Object
+          spec:
+            forProvider:
+              manifest:
+                apiVersion: apps/v1
+                kind: Deployment
+                metadata:
+                  labels:
+                    app: ""
+                  name: ""
+                  namespace: ""
+                spec:
+                  replicas: 1
+                  selector:
+                    matchLabels:
+                      app: ""
+                  template:
+                    metadata:
+                      labels:
+                        app: ""
+                    spec:
+                      containers:
+                      - image: ""
+                        name: app
+                        ports:
+                        - containerPort: 80
+                        resources:
+                          limits:
+                            cpu: 500m
+                            memory: 256Mi
+                          requests:
+                            cpu: 100m
+                            memory: 128Mi
+            providerConfigRef:
+              name: kubernetes-provider-config
+        name: deployment
+        patches:
+        - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+          toFieldPath: spec.forProvider.manifest.metadata.namespace
+          type: FromCompositeFieldPath
+        - fromFieldPath: metadata.labels[crossplane.io/claim-name]
+          toFieldPath: spec.forProvider.manifest.metadata.labels.app
+          type: FromCompositeFieldPath
+        - fromFieldPath: metadata.labels[crossplane.io/claim-name]
+          toFieldPath: spec.forProvider.manifest.spec.selector.matchLabels.app
+          type: FromCompositeFieldPath
+        - fromFieldPath: metadata.labels[crossplane.io/claim-name]
+          toFieldPath: spec.forProvider.manifest.spec.template.metadata.labels.app
+          type: FromCompositeFieldPath
+        - fromFieldPath: metadata.labels[crossplane.io/claim-name]
+          toFieldPath: spec.forProvider.manifest.metadata.name
+          transforms:
+          - string:
+              fmt: '%s-deployment'
+              type: Format
+            type: string
+          type: FromCompositeFieldPath
+        - fromFieldPath: spec.parameters.image
+          toFieldPath: spec.forProvider.manifest.spec.template.spec.containers[0].image
+          type: FromCompositeFieldPath
+        - fromFieldPath: spec.parameters.replicas
+          toFieldPath: spec.forProvider.manifest.spec.replicas
+          type: FromCompositeFieldPath
+        - fromFieldPath: spec.parameters.port
+          toFieldPath: spec.forProvider.manifest.spec.template.spec.containers[0].ports[0].containerPort
+          type: FromCompositeFieldPath
+        - type: FromCompositeFieldPath
+          fromFieldPath: metadata.labels[backstage.io/kubernetes-id]
+          toFieldPath: spec.forProvider.manifest.metadata.labels[backstage.io/kubernetes-id]
+      - base:
+          apiVersion: kubernetes.crossplane.io/v1alpha1
+          kind: Object
+          spec:
+            forProvider:
+              manifest:
+                apiVersion: v1
+                kind: Service
+                metadata:
+                  labels:
+                    app: ""
+                  name: ""
+                  namespace: ""
+                spec:
+                  ports:
+                  - port: 80
+                    protocol: TCP
+                    targetPort: 80
+                  selector:
+                    app: ""
+            providerConfigRef:
+              name: kubernetes-provider-config
+        name: service
+        patches:
+        - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+          toFieldPath: spec.forProvider.manifest.metadata.namespace
+          type: FromCompositeFieldPath
+        - fromFieldPath: metadata.labels[crossplane.io/claim-name]
+          toFieldPath: spec.forProvider.manifest.metadata.labels.app
+          type: FromCompositeFieldPath
+        - fromFieldPath: metadata.labels[crossplane.io/claim-name]
+          toFieldPath: spec.forProvider.manifest.spec.selector.app
+          type: FromCompositeFieldPath
+        - fromFieldPath: metadata.labels[crossplane.io/claim-name]
+          toFieldPath: spec.forProvider.manifest.metadata.name
+          transforms:
+          - string:
+              fmt: '%s-service'
+              type: Format
+            type: string
+          type: FromCompositeFieldPath
+        - fromFieldPath: spec.parameters.port
+          toFieldPath: spec.forProvider.manifest.spec.ports[0].targetPort
+          type: FromCompositeFieldPath
+        - fromFieldPath: spec.parameters.port
+          toFieldPath: spec.forProvider.manifest.spec.ports[0].port
+          type: FromCompositeFieldPath
+        - type: FromCompositeFieldPath
+          fromFieldPath: metadata.labels[backstage.io/kubernetes-id]
+          toFieldPath: spec.forProvider.manifest.metadata.labels[backstage.io/kubernetes-id]
+      - base:
+          apiVersion: kubernetes.crossplane.io/v1alpha1
+          kind: Object
+          spec:
+            forProvider:
+              manifest:
+                apiVersion: networking.k8s.io/v1
+                kind: Ingress
+                metadata:
+                  annotations:
+                    konghq.com/strip-path: "true"
+                  name: ""
+                  namespace: ""
+                spec:
+                  ingressClassName: kong
+                  rules:
+                  - host: ""
+                    http:
+                      paths:
+                      - backend:
+                          service:
+                            name: ""
+                            port:
+                              number: 80
+                        path: /
+                        pathType: Prefix
+            providerConfigRef:
+              name: kubernetes-provider-config
+        name: ingress
+        patches:
+        - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+          toFieldPath: spec.forProvider.manifest.metadata.namespace
+          type: FromCompositeFieldPath
+        - fromFieldPath: metadata.labels[crossplane.io/claim-name]
+          toFieldPath: spec.forProvider.manifest.spec.rules[0].http.paths[0].backend.service.name
+          transforms:
+          - string:
+              fmt: '%s-service'
+              type: Format
+            type: string
+          type: FromCompositeFieldPath
+        - fromFieldPath: metadata.labels[crossplane.io/claim-name]
+          toFieldPath: spec.forProvider.manifest.metadata.name
+          transforms:
+          - string:
+              fmt: '%s-ingress'
+              type: Format
+            type: string
+          type: FromCompositeFieldPath
+        - fromFieldPath: spec.parameters.hostname
+          toFieldPath: spec.forProvider.manifest.spec.rules[0].host
+          type: FromCompositeFieldPath
+        - fromFieldPath: spec.parameters.port
+          toFieldPath: spec.forProvider.manifest.spec.rules[0].http.paths[0].backend.service.port.number
+          type: FromCompositeFieldPath
+        - type: FromCompositeFieldPath
+          fromFieldPath: metadata.labels[backstage.io/kubernetes-id]
+          toFieldPath: spec.forProvider.manifest.metadata.labels[backstage.io/kubernetes-id]
+    step: patch-and-transform
+  publishConnectionDetailsWithStoreConfigRef:
+    name: default

@@ -59,6 +59,19 @@ rules:
       - issuers
       - clusterissuers
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  # Backstage UI Read-Only Access Extensions
+  - apiGroups: [""]
+    resources: ["limitranges", "resourcequotas"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["wgpolicyk8s.io"]
+    resources: ["policyreports", "clusterpolicyreports"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["example.crossplane.io"]
+    resources: ["localdeployments"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["kubernetes.crossplane.io"]
+    resources: ["objects"]
+    verbs: ["get", "list", "watch"]
   - nonResourceURLs: ["*"]
     verbs: ["get", "list"]
 ---
