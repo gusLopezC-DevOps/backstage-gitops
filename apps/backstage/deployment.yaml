@@ -56,6 +56,15 @@ spec:
                 key: POSTGRES_PASSWORD
           - name: NODE_OPTIONS
             value: "--no-node-snapshot"
+        args:
+          - node
+          - packages/backend
+          - --config
+          - app-config.yaml
+          - --config
+          - app-config.production.yaml
+          - --config
+          - /app/override.yaml
         readinessProbe:
           httpGet:
             path: /
@@ -87,6 +96,9 @@ spec:
         - mountPath: /app/packages/backend/dist/index.cjs.js
           name: backend-index
           subPath: index.cjs.js
+        - mountPath: /app/override.yaml
+          name: app-config-override
+          subPath: override.yaml
         resources:
           requests:
             memory: 512Mi
@@ -111,3 +123,7 @@ spec:
           defaultMode: 420
           name: backstage-backend-index
         name: backend-index
+      - configMap:
+          defaultMode: 420
+          name: backstage-app-config-override
+        name: app-config-override

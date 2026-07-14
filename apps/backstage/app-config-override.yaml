@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backstage-app-config-override
+  namespace: workloads
+data:
+  override.yaml: |
+    kubernetes:
+      customResources:
+        - group: 'wgpolicyk8s.io'
+          apiVersion: 'v1alpha2'
+          plural: 'policyreports'
+        - group: 'example.crossplane.io'
+          apiVersion: 'v1alpha1'
+          plural: 'localdeployments'

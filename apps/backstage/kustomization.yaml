@@ -7,5 +7,6 @@ resources:
 - certificate.yaml
 - k8s-rbac.yaml
 - composition.yaml
+- app-config-override.yaml
 - postgres
 - network-policies
