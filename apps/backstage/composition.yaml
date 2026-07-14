@@ -88,6 +88,9 @@ spec:
         - type: FromCompositeFieldPath
           fromFieldPath: metadata.labels[backstage.io/kubernetes-id]
           toFieldPath: spec.forProvider.manifest.metadata.labels[backstage.io/kubernetes-id]
+        - type: FromCompositeFieldPath
+          fromFieldPath: metadata.labels[backstage.io/kubernetes-id]
+          toFieldPath: spec.forProvider.manifest.spec.template.metadata.labels[backstage.io/kubernetes-id]
       - base:
           apiVersion: kubernetes.crossplane.io/v1alpha1
           kind: Object
