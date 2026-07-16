@@ -22,7 +22,7 @@ spec:
         command: ['sh', '-c', 'until nc -z postgres 5432; do echo waiting for postgres; sleep 2; done;']
       containers:
       - name: backstage
-        image: docker.io/guslopezc/backstage:v3
+        image: docker.io/guslopezc/backstage:v7
         imagePullPolicy: Always
         ports:
         - containerPort: 7007
@@ -93,9 +93,6 @@ spec:
         - mountPath: /app/plugins/custom-actions.cjs.js
           name: custom-actions
           subPath: custom-actions.cjs.js
-        - mountPath: /app/packages/backend/dist/index.cjs.js
-          name: backend-index
-          subPath: index.cjs.js
         - mountPath: /app/override.yaml
           name: app-config-override
           subPath: override.yaml
@@ -119,10 +116,6 @@ spec:
           defaultMode: 420
           name: backstage-custom-actions
         name: custom-actions
-      - configMap:
-          defaultMode: 420
-          name: backstage-backend-index
-        name: backend-index
       - configMap:
           defaultMode: 420
           name: backstage-app-config-override
