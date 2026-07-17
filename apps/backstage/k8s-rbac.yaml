@@ -7,78 +7,85 @@ metadata:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: backstage-full-access
+  name: backstage-readonly
 rules:
+  # Core resources — get/list/watch only
   - apiGroups: [""]
     resources:
       - pods
+      - pods/log
+      - pods/status
       - services
+      - endpoints
       - configmaps
       - secrets
       - nodes
       - namespaces
       - persistentvolumeclaims
+      - persistentvolumes
       - events
       - serviceaccounts
-    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+      - limitranges
+      - resourcequotas
+      - replicationcontrollers
+    verbs: ["get", "list", "watch"]
+  # Apps
   - apiGroups: ["apps"]
-    resources:
-      - deployments
-      - daemonsets
-      - replicasets
-      - statefulsets
-    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+    resources: [deployments, daemonsets, replicasets, statefulsets]
+    verbs: ["get", "list", "watch"]
+  # Networking
   - apiGroups: ["networking.k8s.io"]
-    resources:
-      - ingresses
-      - networkpolicies
-    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+    resources: [ingresses, networkpolicies]
+    verbs: ["get", "list", "watch"]
+  # Batch
   - apiGroups: ["batch"]
-    resources:
-      - jobs
-      - cronjobs
-    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+    resources: [jobs, cronjobs]
+    verbs: ["get", "list", "watch"]
+  # Autoscaling
   - apiGroups: ["autoscaling"]
-    resources:
-      - horizontalpodautoscalers
-    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+    resources: [horizontalpodautoscalers]
+    verbs: ["get", "list", "watch"]
+  # Policy
   - apiGroups: ["policy"]
-    resources:
-      - poddisruptionbudgets
-    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+    resources: [poddisruptionbudgets]
+    verbs: ["get", "list", "watch"]
+  # ArgoCD
   - apiGroups: ["argoproj.io"]
-    resources:
-      - applications
-      - applicationsets
-      - appprojects
-    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+    resources: [applications, applicationsets, appprojects]
+    verbs: ["get", "list", "watch"]
+  # Cert-manager
   - apiGroups: ["cert-manager.io"]
+    resources: [certificates, certificaterequests, issuers, clusterissuers]
+    verbs: ["get", "list", "watch"]
+  # Kyverno CRDs
+  - apiGroups: ["kyverno.io"]
     resources:
-      - certificates
-      - certificaterequests
-      - issuers
-      - clusterissuers
-    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-  # Backstage UI Read-Only Access Extensions
-  - apiGroups: [""]
-    resources: ["limitranges", "resourcequotas"]
+      - policies
+      - clusterpolicies
+      - policyreports
+      - clusterpolicyreports
+      - policyexceptions
     verbs: ["get", "list", "watch"]
+  # WGPolicy API — Policy Reports (standard API)
   - apiGroups: ["wgpolicyk8s.io"]
-    resources: ["policyreports", "clusterpolicyreports"]
+    resources: [policyreports, clusterpolicyreports]
     verbs: ["get", "list", "watch"]
-  - apiGroups: ["example.crossplane.io"]
-    resources: ["localdeployments"]
-    verbs: ["get", "list", "watch"]
+  # Crossplane
   - apiGroups: ["kubernetes.crossplane.io"]
-    resources: ["objects"]
+    resources: [objects]
     verbs: ["get", "list", "watch"]
+  # CRD discovery
+  - apiGroups: ["apiextensions.k8s.io"]
+    resources: [customresourcedefinitions]
+    verbs: ["get", "list", "watch"]
+  # nonResourceURLs
   - nonResourceURLs: ["*"]
     verbs: ["get", "list"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: backstage-full-access
+  name: backstage-readonly
 subjects:
   - kind: ServiceAccount
     name: backstage
@@ -86,4 +93,4 @@ subjects:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: backstage-full-access
+  name: backstage-readonly
