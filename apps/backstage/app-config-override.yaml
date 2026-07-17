@@ -13,3 +13,11 @@ data:
         - group: 'example.crossplane.io'
           apiVersion: 'v1alpha1'
           plural: 'localdeployments'
+
+    kyverno:
+      enablePermissions: false
+
+    kubernetesResources:
+      enablePermissions: true
+      annotationPrefix: terasky.backstage.io
+      concurrency: 10
