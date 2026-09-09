@@ -252,7 +252,7 @@ data:
           action: github:actions:dispatch
           input:
             repoUrl: github.com?owner=gusLopezC-DevOps&repo=control-plane
-            workflowId: alta-pr.yml
+            workflowId: workflow-alta-pr.yml
             branchOrTagName: main
             workflowInputs:
               nombre: ${{ parameters.repoName }}
