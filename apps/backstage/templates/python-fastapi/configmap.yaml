@@ -230,12 +230,19 @@ data:
               repoName: ${{ parameters.repoName }}
               description: ${{ parameters.description }}
               grupo: ${{ parameters.grupo }}
+        - id: limpiar
+          name: Limpiar residuos del skeleton
+          action: fs:delete
+          input:
+            files:
+              - workload/.github/workflows/ci-cd.yaml
+              - workload/main.py
+              - workload/requirements.txt
         - id: publish
           name: Crear repositorio en GitHub
           action: publish:github
           input:
-            repoUrl: https://github.com/gusLopezC-DevOps
-            repoName: ${{ parameters.repoName }}
+            repoUrl: github.com?owner=gusLopezC-DevOps&repo=${{ parameters.repoName }}
             defaultBranch: main
             sourcePath: workload
             description: ${{ parameters.description }}

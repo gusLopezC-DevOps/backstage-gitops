@@ -49,6 +49,8 @@ spec:
       input:
         files:
           - workload/.github/workflows/ci-cd.yaml
+          - workload/main.py
+          - workload/requirements.txt
     - id: publish
       name: Crear repositorio en GitHub
       action: publish:github

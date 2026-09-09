@@ -108,10 +108,10 @@ spec:
         - mountPath: /app/templates/python-fastapi/skeleton/catalog-info.yaml
           name: python-fastapi-template
           subPath: skeleton.catalog-info.yaml
-        - mountPath: /app/templates/python-fastapi/skeleton/main.py
+        - mountPath: /app/templates/python-fastapi/skeleton/app/main.py
           name: python-fastapi-template
           subPath: skeleton.app.main.py
-        - mountPath: /app/templates/python-fastapi/skeleton/requirements.txt
+        - mountPath: /app/templates/python-fastapi/skeleton/app/requirements.txt
           name: python-fastapi-template
           subPath: skeleton.app.requirements.txt
         - mountPath: /app/templates/python-fastapi/skeleton/deployment.yaml
