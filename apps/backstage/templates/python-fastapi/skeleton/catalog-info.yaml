@@ -1,13 +1,13 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: ${{ repoName }}
-  description: ${{ description }}
+  name: ${{ values.repoName }}
+  description: ${{ values.description }}
   annotations:
-    github.com/project-slug: gusLopezC-DevOps/${{ repoName }}
-    backstage.io/kubernetes-id: ${{ repoName }}
+    github.com/project-slug: gusLopezC-DevOps/${{ values.repoName }}
+    backstage.io/kubernetes-id: ${{ values.repoName }}
     backstage.io/techdocs-ref: dir:.
 spec:
   type: service
   lifecycle: production
-  owner: group:default/${{ grupo }}
+  owner: group:default/${{ values.grupo }}

@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ${{ repoName }}
-  namespace: ${{ repoName }}
+  name: ${{ values.repoName }}
+  namespace: ${{ values.repoName }}
   labels:
-    app: ${{ repoName }}
+    app: ${{ values.repoName }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ${{ repoName }}
+      app: ${{ values.repoName }}
   template:
     metadata:
       labels:
-        app: ${{ repoName }}
+        app: ${{ values.repoName }}
     spec:
       containers:
         - name: app
-          image: docker.io/guslopezc/${{ repoName }}:ci
+          image: docker.io/guslopezc/${{ values.repoName }}:ci
           ports:
             - containerPort: 8000
           readinessProbe:

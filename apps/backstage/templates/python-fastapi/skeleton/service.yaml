@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ${{ repoName }}
-  namespace: ${{ repoName }}
+  name: ${{ values.repoName }}
+  namespace: ${{ values.repoName }}
 spec:
   selector:
-    app: ${{ repoName }}
+    app: ${{ values.repoName }}
   ports:
     - name: http
       port: 8000

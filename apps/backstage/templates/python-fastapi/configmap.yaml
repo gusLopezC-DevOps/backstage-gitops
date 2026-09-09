@@ -33,13 +33,13 @@ data:
             with:
               context: .
               push: true
-              tags: docker.io/guslopezc/${{ repoName }}:${{ '${{ github.sha }}' }}
+              tags: docker.io/guslopezc/${{ values.repoName }}:${{ '${{ github.sha }}' }}
               cache-from: type=gha
               cache-to: type=gha,mode=max
     
           - name: Actualizar imagen del manifest (dispara sync de Argo)
             run: |
-              sed -i 's#image: docker.io/guslopezc/.*#image: docker.io/guslopezc/${{ repoName }}:$GITHUB_SHA#' deployment.yaml
+              sed -i 's#image: docker.io/guslopezc/.*#image: docker.io/guslopezc/${{ values.repoName }}:$GITHUB_SHA#' deployment.yaml
               git config user.name 'github-actions[bot]'
               git config user.email 'github-actions[bot]@users.noreply.github.com'
               git add deployment.yaml
@@ -59,13 +59,13 @@ data:
     EXPOSE 8000
     CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
   skeleton.README.md: |
-    # ${{ repoName }}
+    # ${{ values.repoName }}
     
     Microservicio Python/FastAPI desplegado por Argo CD.
     
-    - Imagen: `docker.io/guslopezc/${{ repoName }}`
-    - Namespace / AppProject / Application: `${{ repoName }}`
-    - Ingress: `https://${{ repoName }}.local`
+    - Imagen: `docker.io/guslopezc/${{ values.repoName }}`
+    - Namespace / AppProject / Application: `${{ values.repoName }}`
+    - Ingress: `https://${{ values.repoName }}.local`
     
     ## Local
     
@@ -81,12 +81,12 @@ data:
   skeleton.app.main.py: |
     from fastapi import FastAPI
     
-    app = FastAPI(title="${{ repoName }}", version="0.1.0")
+    app = FastAPI(title="${{ values.repoName }}", version="0.1.0")
     
     
     @app.get("/")
     def root() -> dict:
-        return {"message": "Hello from ${{ repoName }}"}
+        return {"message": "Hello from ${{ values.repoName }}"}
     
     
     @app.get("/health")
@@ -99,37 +99,37 @@ data:
     apiVersion: backstage.io/v1alpha1
     kind: Component
     metadata:
-      name: ${{ repoName }}
-      description: ${{ description }}
+      name: ${{ values.repoName }}
+      description: ${{ values.description }}
       annotations:
-        github.com/project-slug: gusLopezC-DevOps/${{ repoName }}
-        backstage.io/kubernetes-id: ${{ repoName }}
+        github.com/project-slug: gusLopezC-DevOps/${{ values.repoName }}
+        backstage.io/kubernetes-id: ${{ values.repoName }}
         backstage.io/techdocs-ref: dir:.
     spec:
       type: service
       lifecycle: production
-      owner: group:default/${{ grupo }}
+      owner: group:default/${{ values.grupo }}
   skeleton.deployment.yaml: |
     apiVersion: apps/v1
     kind: Deployment
     metadata:
-      name: ${{ repoName }}
-      namespace: ${{ repoName }}
+      name: ${{ values.repoName }}
+      namespace: ${{ values.repoName }}
       labels:
-        app: ${{ repoName }}
+        app: ${{ values.repoName }}
     spec:
       replicas: 1
       selector:
         matchLabels:
-          app: ${{ repoName }}
+          app: ${{ values.repoName }}
       template:
         metadata:
           labels:
-            app: ${{ repoName }}
+            app: ${{ values.repoName }}
         spec:
           containers:
             - name: app
-              image: docker.io/guslopezc/${{ repoName }}:ci
+              image: docker.io/guslopezc/${{ values.repoName }}:ci
               ports:
                 - containerPort: 8000
               readinessProbe:
@@ -151,35 +151,35 @@ data:
     apiVersion: networking.k8s.io/v1
     kind: Ingress
     metadata:
-      name: ${{ repoName }}
-      namespace: ${{ repoName }}
+      name: ${{ values.repoName }}
+      namespace: ${{ values.repoName }}
     spec:
       ingressClassName: kong
       rules:
-        - host: ${{ repoName }}.local
+        - host: ${{ values.repoName }}.local
           http:
             paths:
               - path: /
                 pathType: Prefix
                 backend:
                   service:
-                    name: ${{ repoName }}
+                    name: ${{ values.repoName }}
                     port:
                       name: http
   skeleton.mkdocs.yml: |
-    site_name: ${{ repoName }}
-    repo_url: https://github.com/gusLopezC-DevOps/${{ repoName }}
+    site_name: ${{ values.repoName }}
+    repo_url: https://github.com/gusLopezC-DevOps/${{ values.repoName }}
     nav:
       - Inicio: index.md
   skeleton.service.yaml: |
     apiVersion: v1
     kind: Service
     metadata:
-      name: ${{ repoName }}
-      namespace: ${{ repoName }}
+      name: ${{ values.repoName }}
+      namespace: ${{ values.repoName }}
     spec:
       selector:
-        app: ${{ repoName }}
+        app: ${{ values.repoName }}
       ports:
         - name: http
           port: 8000

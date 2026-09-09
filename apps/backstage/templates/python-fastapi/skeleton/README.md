@@ -1,10 +1,10 @@
-# ${{ repoName }}
+# ${{ values.repoName }}
 
 Microservicio Python/FastAPI desplegado por Argo CD.
 
-- Imagen: `docker.io/guslopezc/${{ repoName }}`
-- Namespace / AppProject / Application: `${{ repoName }}`
-- Ingress: `https://${{ repoName }}.local`
+- Imagen: `docker.io/guslopezc/${{ values.repoName }}`
+- Namespace / AppProject / Application: `${{ values.repoName }}`
+- Ingress: `https://${{ values.repoName }}.local`
 
 ## Local
 

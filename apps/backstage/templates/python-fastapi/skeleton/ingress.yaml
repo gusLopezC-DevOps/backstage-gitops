@@ -1,18 +1,18 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ${{ repoName }}
-  namespace: ${{ repoName }}
+  name: ${{ values.repoName }}
+  namespace: ${{ values.repoName }}
 spec:
   ingressClassName: kong
   rules:
-    - host: ${{ repoName }}.local
+    - host: ${{ values.repoName }}.local
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: ${{ repoName }}
+                name: ${{ values.repoName }}
                 port:
                   name: http
