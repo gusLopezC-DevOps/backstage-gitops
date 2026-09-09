@@ -1,0 +1,83 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: python-fastapi
+  title: Python FastAPI Microservice
+  description: Crea un microservicio Python/FastAPI que se despliega y registra en Argo CD de forma automatica (PR al plano de control + root-app)
+  tags:
+    - python
+    - fastapi
+    - docker
+    - argocd
+  annotations:
+    github.com/project-slug: gusLopezC-DevOps/backstage-entities
+spec:
+  owner: development
+  type: service
+  parameters:
+    - title: Proyecto
+      required:
+        - repoName
+        - description
+      properties:
+        repoName:
+          title: Nombre del workload (repo + namespace + AppProject + Application)
+          type: string
+          description: 'Minusculas y guiones. Ej: mi-api'
+        description:
+          title: Descripcion
+          type: string
+        grupo:
+          title: Grupo / equipo propietario
+          type: string
+          description: 'Ej: dev'
+          default: dev
+  steps:
+    - id: fetch
+      name: Scaffold del repositorio
+      action: fetch:template
+      input:
+        url: ./skeleton
+        targetPath: ./workload
+        values:
+          repoName: ${{ parameters.repoName }}
+          description: ${{ parameters.description }}
+          grupo: ${{ parameters.grupo }}
+    - id: publish
+      name: Crear repositorio en GitHub
+      action: publish:github
+      input:
+        repoUrl: https://github.com/gusLopezC-DevOps
+        repoName: ${{ parameters.repoName }}
+        defaultBranch: main
+        sourcePath: workload
+        description: ${{ parameters.description }}
+        gitCommitMessage: Initial scaffold from Backstage + Argo CD
+    - id: alta
+      name: Registrar workload en el plano de control (PR)
+      action: github:actions:dispatch
+      input:
+        repoUrl: github.com?owner=gusLopezC-DevOps&repo=control-plane
+        workflowId: alta-pr.yml
+        branchReference: main
+        workflowInputs:
+          nombre: ${{ parameters.repoName }}
+          repositorio: https://github.com/gusLopezC-DevOps/${{ parameters.repoName }}.git
+          grupo: ${{ parameters.grupo }}
+          arquetipo: stateless
+    - id: register
+      name: Registrar en el catalogo Backstage
+      action: catalog:register
+      input:
+        repoContentsUrl: https://github.com/gusLopezC-DevOps/${{ parameters.repoName }}/blob/main
+        catalogInfoPath: catalog-info.yaml
+  output:
+    links:
+      - title: Repositorio
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: PR en el plano de control
+        url: https://github.com/gusLopezC-DevOps/control-plane/pulls
+      - title: ArgoCD
+        url: https://argocd.local/applications/${{ parameters.repoName }}
+      - title: Catalogo Backstage
+        url: https://backstage.local/catalog/default/component/${{ parameters.repoName }}

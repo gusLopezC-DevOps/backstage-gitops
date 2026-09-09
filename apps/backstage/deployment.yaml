@@ -93,6 +93,8 @@ spec:
         - mountPath: /app/plugins/custom-actions.cjs.js
           name: custom-actions
           subPath: custom-actions.cjs.js
+        - mountPath: /app/templates/python-fastapi
+          name: python-fastapi-template
         - mountPath: /app/override.yaml
           name: app-config-override
           subPath: override.yaml
@@ -108,6 +110,33 @@ spec:
           defaultMode: 420
           name: backstage-template-root
         name: template-root
+      - name: python-fastapi-template
+        configMap:
+          name: backstage-python-fastapi-template
+          defaultMode: 420
+          items:
+            - key: skeleton..github.workflows.ci.yml
+              path: skeleton/.github/workflows/ci.yml
+            - key: skeleton.Dockerfile
+              path: skeleton/Dockerfile
+            - key: skeleton.README.md
+              path: skeleton/README.md
+            - key: skeleton.app.main.py
+              path: skeleton/app/main.py
+            - key: skeleton.app.requirements.txt
+              path: skeleton/app/requirements.txt
+            - key: skeleton.catalog-info.yaml
+              path: skeleton/catalog-info.yaml
+            - key: skeleton.deployment.yaml
+              path: skeleton/deployment.yaml
+            - key: skeleton.ingress.yaml
+              path: skeleton/ingress.yaml
+            - key: skeleton.mkdocs.yml
+              path: skeleton/mkdocs.yml
+            - key: skeleton.service.yaml
+              path: skeleton/service.yaml
+            - key: template.yaml
+              path: template.yaml
       - configMap:
           defaultMode: 420
           name: backstage-crossplane-skeleton

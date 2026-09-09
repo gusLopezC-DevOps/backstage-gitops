@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${{ parameters.repoName }}
+  namespace: ${{ parameters.repoName }}
+spec:
+  selector:
+    app: ${{ parameters.repoName }}
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000

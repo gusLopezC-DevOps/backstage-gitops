@@ -8,5 +8,6 @@ resources:
 - k8s-rbac.yaml
 - composition.yaml
 - app-config-override.yaml
+- templates/python-fastapi/configmap.yaml
 - postgres
 - network-policies
