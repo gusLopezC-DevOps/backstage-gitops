@@ -253,7 +253,7 @@ data:
           input:
             repoUrl: github.com?owner=gusLopezC-DevOps&repo=control-plane
             workflowId: alta-pr.yml
-            branchReference: main
+            branchOrTagName: main
             workflowInputs:
               nombre: ${{ parameters.repoName }}
               repositorio: https://github.com/gusLopezC-DevOps/${{ parameters.repoName }}.git
