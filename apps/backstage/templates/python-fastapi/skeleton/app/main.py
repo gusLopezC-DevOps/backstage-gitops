@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 
-app = FastAPI(title="${{ parameters.repoName }}", version="0.1.0")
+app = FastAPI(title="${{ repoName }}", version="0.1.0")
 
 
 @app.get("/")
 def root() -> dict:
-    return {"message": "Hello from ${{ parameters.repoName }}"}
+    return {"message": "Hello from ${{ repoName }}"}
 
 
 @app.get("/health")
