@@ -263,8 +263,7 @@ data:
           name: Registrar en el catalogo Backstage
           action: catalog:register
           input:
-            repoContentsUrl: https://github.com/gusLopezC-DevOps/${{ parameters.repoName }}/blob/main
-            catalogInfoPath: catalog-info.yaml
+            catalogInfoUrl: https://github.com/gusLopezC-DevOps/${{ parameters.repoName }}/blob/main/catalog-info.yaml
       output:
         links:
           - title: Repositorio
