@@ -39,7 +39,7 @@ data:
     
           - name: Actualizar imagen del manifest (dispara sync de Argo)
             run: |
-              sed -i 's#image: docker.io/guslopezc/.*#image: docker.io/guslopezc/${{ values.repoName }}:$GITHUB_SHA#' deployment.yaml
+              sed -i "s#image: docker.io/guslopezc/.*#image: docker.io/guslopezc/${{ values.repoName }}:$GITHUB_SHA#" deployment.yaml
               git config user.name 'github-actions[bot]'
               git config user.email 'github-actions[bot]@users.noreply.github.com'
               git add deployment.yaml
