@@ -56,6 +56,7 @@ spec:
       action: publish:github
       input:
         repoUrl: github.com?owner=gusLopezC-DevOps&repo=${{ parameters.repoName }}
+        repoVisibility: public
         defaultBranch: main
         sourcePath: workload
         description: ${{ parameters.description }}
