@@ -48,7 +48,7 @@ spec:
           mountPath: /store-config
       containers:
       - name: backstage
-        image: docker.io/guslopezc/backstage:v12
+        image: docker.io/guslopezc/backstage:v13
         imagePullPolicy: Always
         ports:
         - containerPort: 7007
