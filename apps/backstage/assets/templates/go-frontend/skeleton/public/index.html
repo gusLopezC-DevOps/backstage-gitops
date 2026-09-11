@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>${{ values.repoName }}</title>
+  <style>
+    body { font-family: system-ui, sans-serif; display: grid; place-items: center; height: 100vh; margin: 0; background: #0f172a; color: #e2e8f0; }
+    h1 { font-weight: 600; }
+    .ok { color: #34d399; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>${{ values.repoName }}</h1>
+    <p>Frontend en Go sirviéndose desde <code>public/</code>.</p>
+    <p class="ok">Health: <a href="/health">/health</a></p>
+  </main>
+</body>
+</html>

@@ -20,6 +20,23 @@ spec:
       - name: wait-for-postgres
         image: busybox:1.36
         command: ['sh', '-c', 'until nc -z postgres 5432; do echo waiting for postgres; sleep 2; done;']
+      - name: copy-assets
+        image: busybox:1.36
+        command:
+        - sh
+        - -c
+        - |
+          mkdir -p /store
+          while read -r key dst; do
+            case "$key" in ''|\#*) continue;; esac
+            mkdir -p "/store/$(dirname "$dst")"
+            cp "/cfg/$key" "/store/$dst"
+          done < /cfg/layout
+        volumeMounts:
+        - name: backstage-templates
+          mountPath: /cfg
+        - name: templates-store
+          mountPath: /store
       containers:
       - name: backstage
         image: docker.io/guslopezc/backstage:v12
@@ -64,7 +81,7 @@ spec:
           - --config
           - app-config.production.yaml
           - --config
-          - /app/override.yaml
+          - /app/config/override.yaml
         readinessProbe:
           httpGet:
             path: /
@@ -78,57 +95,12 @@ spec:
           initialDelaySeconds: 60
           periodSeconds: 15
         volumeMounts:
-        - mountPath: /app/templates/k8s-manifests/template.yaml
-          name: template-root
-          subPath: template.yaml
-        - mountPath: /app/templates/k8s-manifests/crossplane-skeleton/claim.yaml
-          name: crossplane-skeleton
-          subPath: claim.yaml
-        - mountPath: /app/templates/k8s-manifests/crossplane-skeleton/kustomization.yaml
-          name: crossplane-skeleton
-          subPath: kustomization.yaml
-        - mountPath: /app/templates/k8s-manifests/crossplane-skeleton/catalog-info.yaml
-          name: crossplane-skeleton
-          subPath: catalog-info.yaml
-        - mountPath: /app/plugins/custom-actions.cjs.js
-          name: custom-actions
-          subPath: custom-actions.cjs.js
-        - mountPath: /app/templates/python-fastapi/template.yaml
-          name: python-fastapi-template
-          subPath: template.yaml
-        - mountPath: /app/templates/python-fastapi/skeleton/Dockerfile
-          name: python-fastapi-template
-          subPath: skeleton.Dockerfile
-        - mountPath: /app/templates/python-fastapi/skeleton/README.md
-          name: python-fastapi-template
-          subPath: skeleton.README.md
-        - mountPath: /app/templates/python-fastapi/skeleton/mkdocs.yml
-          name: python-fastapi-template
-          subPath: skeleton.mkdocs.yml
-        - mountPath: /app/templates/python-fastapi/skeleton/catalog-info.yaml
-          name: python-fastapi-template
-          subPath: skeleton.catalog-info.yaml
-        - mountPath: /app/templates/python-fastapi/skeleton/app/main.py
-          name: python-fastapi-template
-          subPath: skeleton.app.main.py
-        - mountPath: /app/templates/python-fastapi/skeleton/app/requirements.txt
-          name: python-fastapi-template
-          subPath: skeleton.app.requirements.txt
-        - mountPath: /app/templates/python-fastapi/skeleton/deployment.yaml
-          name: python-fastapi-template
-          subPath: skeleton.deployment.yaml
-        - mountPath: /app/templates/python-fastapi/skeleton/service.yaml
-          name: python-fastapi-template
-          subPath: skeleton.service.yaml
-        - mountPath: /app/templates/python-fastapi/skeleton/ingress.yaml
-          name: python-fastapi-template
-          subPath: skeleton.ingress.yaml
-        - mountPath: /app/templates/python-fastapi/skeleton/.github/workflows/ci.yml
-          name: python-fastapi-template
-          subPath: skeleton..github.workflows.ci.yml
-        - mountPath: /app/override.yaml
-          name: app-config-override
-          subPath: override.yaml
+        - mountPath: /app/templates
+          name: templates-store
+        - mountPath: /app/plugins
+          name: templates-store
+        - mountPath: /app/config
+          name: templates-store
         resources:
           requests:
             memory: 512Mi
@@ -137,23 +109,9 @@ spec:
             memory: 1Gi
             cpu: 1000m
       volumes:
-      - configMap:
-          defaultMode: 420
-          name: backstage-template-root
-        name: template-root
-      - name: python-fastapi-template
+      - name: backstage-templates
         configMap:
-          name: backstage-python-fastapi-template
+          name: backstage-templates
           defaultMode: 420
-      - configMap:
-          defaultMode: 420
-          name: backstage-crossplane-skeleton
-        name: crossplane-skeleton
-      - configMap:
-          defaultMode: 420
-          name: backstage-custom-actions
-        name: custom-actions
-      - configMap:
-          defaultMode: 420
-          name: backstage-app-config-override
-        name: app-config-override
+      - name: templates-store
+        emptyDir: {}

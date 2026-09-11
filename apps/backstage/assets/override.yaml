@@ -1,0 +1,50 @@
+kubernetes:
+  customResources:
+    - group: 'wgpolicyk8s.io'
+      apiVersion: 'v1alpha2'
+      plural: 'policyreports'
+    - group: 'example.crossplane.io'
+      apiVersion: 'v1alpha1'
+      plural: 'localdeployments'
+
+kyverno:
+  enablePermissions: false
+
+kubernetesResources:
+  enablePermissions: true
+  annotationPrefix: terasky.backstage.io
+  concurrency: 10
+
+catalog:
+  locations:
+    # Local entity files
+    - type: file
+      target: /app/entities/users.yaml
+      rules:
+        - allow: [User]
+
+    - type: file
+      target: /app/entities/groups.yaml
+      rules:
+        - allow: [Group]
+
+    - type: file
+      target: /app/entities/components.yaml
+      rules:
+        - allow: [Component]
+
+    # Local software templates
+    - type: file
+      target: /app/templates/python-fastapi/template.yaml
+      rules:
+        - allow: [Template]
+
+    - type: file
+      target: /app/templates/k8s-manifests/template.yaml
+      rules:
+        - allow: [Template]
+
+    - type: file
+      target: /app/templates/go-frontend/template.yaml
+      rules:
+        - allow: [Template]

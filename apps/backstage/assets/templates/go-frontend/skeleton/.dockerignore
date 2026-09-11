@@ -1,0 +1,6 @@
+.git
+.gitignore
+.github
+Dockerfile
+README.md
+# public/ se copia explicitamente al image

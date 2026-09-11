@@ -1,0 +1,4 @@
+site_name: ${{ values.repoName }}
+repo_url: https://github.com/gusLopezC-DevOps/${{ values.repoName }}
+nav:
+  - Inicio: index.md

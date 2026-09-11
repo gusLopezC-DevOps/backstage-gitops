@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ appName }}
+  description: A secure crossplane workload
+  annotations:
+    backstage.io/kubernetes-id: ${{ appName }}
+    backstage.io/kubernetes-namespace: workloads
+    kyverno.io/namespace: workloads
+    kyverno.io/kind: Deployment,Pod
+    kyverno.io/resource-name: ${{ appName }}
+spec:
+  type: service
+  lifecycle: experimental
+  owner: development
+  dependsOn:
+    - resource:default/kubernetes-cluster

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${{ values.repoName }}
+  namespace: ${{ values.repoName }}
+  labels:
+    app: ${{ values.repoName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${{ values.repoName }}
+  template:
+    metadata:
+      labels:
+        app: ${{ values.repoName }}
+    spec:
+      containers:
+        - name: app
+          image: docker.io/guslopezc/${{ values.repoName }}:ci
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 96Mi
