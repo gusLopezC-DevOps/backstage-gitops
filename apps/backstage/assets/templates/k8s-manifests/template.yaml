@@ -1,5 +1,3 @@
-Place your right index finger on the fingerprint reader
-Verification timed out
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
