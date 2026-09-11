@@ -40,11 +40,6 @@ data:
           rules:
             - allow: [Group]
     
-        - type: file
-          target: /app/entities/components.yaml
-          rules:
-            - allow: [Component]
-    
         # Local software templates
         - type: file
           target: /app/templates/python-fastapi/template.yaml
