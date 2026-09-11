@@ -24,6 +24,11 @@ flowchart LR
 
 > **Nota**: el catálogo actual ya **no** carga `components.yaml` (demos/entidades
 > antiguas) — se quitó esa location al limpiar el catálogo (ver `catalogo.md`).
+>
+> **Nota 2**: la imagen tampoco hornea `catalog/templates` (se eliminaron de
+> `backstage-app`); las plantillas del scaffolder las sirve **solo** el CM vía
+> `templates/*` → `/app/templates`. El `override.yaml` referencia esas rutas
+> (`file:/app/templates/<tpl>/template.yaml`).
 
 ### Lección crítica: el merge de Backstage reemplaza arrays
 

@@ -21,6 +21,7 @@ kubectl -n workloads exec deploy/backstage -- cat /app/config/override.yaml
 |---|---|
 | Sincronizar Argo | API/UI de `argocd.local` → app → Sync (o force-sync de `backstage-gitops`/`root-app`) |
 | Cambiar un template/override/plugin | `gen_cm.py` → push → sync → `rollout restart deploy/backstage` |
+| Publicar nueva imagen de Backstage | push a `backstage-app` (CI build+push Docker Hub) → bump tag en `apps/backstage/deployment.yaml` → sync → rollout |
 | Reiniciar Backstage (BD volcada, plugin) | `kubectl -n workloads rollout restart deploy/backstage` |
 | Ver logs | `kubectl -n workloads logs deploy/backstage --tail=300 -f` |
 | DNS clientes | `/etc/hosts`: `192.168.100.77 <host>.local` |
@@ -55,10 +56,14 @@ kubectl -n workloads exec deploy/backstage -- cat /app/config/override.yaml
 9. **`kubectl` del nodo pide fingerprint/PAM** (sudo): usar
    `echo 'plusultra' | sudo -S -p '' kubectl …` y colgar tiempo.
 10. **TLS de Kong es `CN=localhost`** (sin SAN): advertencia del navegador, no bloquea.
+11. **TechDocs**: `techdocs-ref: dir:.` con entidad registrada por `raw` cae a
+    `FetchUrlReader` (no implementa `readTree`). Usar
+    `backstage.io/techdocs-ref: url:https://github.com/<org>/<repo>/tree/main` en el
+    skeleton y **siempre** `docs/index.md` (el `mkdocs.yml` referencia `index.md`).
 
 ## Valores de referencia
 
-- Imagen Backstage: `docker.io/guslopezc/backstage:v12`.
+| Imagen Backstage | `docker.io/guslopezc/backstage:v13` — repo `gusLopezC-DevOps/backstage-app`, CI `build-push` (tags por SHA + `latest` + versiones tipo `v13`) |
 - Bindings: pod `7007`, service ClusterIP `7007`, ingress Kong `backstage.local`.
 - BD: StatefulSet `postgres` en `workloads`.
 - CM: `backstage-templates` (generado por `gen_cm.py`).

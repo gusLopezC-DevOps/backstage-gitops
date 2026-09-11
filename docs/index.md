@@ -28,6 +28,7 @@ flowchart LR
 
 | Repo | Rol | Documentación |
 |---|---|---|
+| [`backstage-app`](https://github.com/gusLopezC-DevOps/backstage-app) | Contexto de build de la imagen Backstage (Dockerfile + app-config + `catalog/entities`) | `README.md` |
 | [`backstage-gitops`](https://github.com/gusLopezC-DevOps/backstage-gitops) | Infraestructura del portal: manifests, CM de templates/plugins/config | este `docs/` |
 | [`control-plane`](https://github.com/gusLopezC-DevOps/control-plane) | Plano de control GitOps (App-of-Apps) + gancho de alta de workloads | `docs/integracion-backstage.md`, `docs/operar.md`, `docs/arquetipos.md` |
 | [`backstage-workloads`](https://github.com/gusLopezC-DevOps/backstage-workloads) | Entidades estáticas de catálogo (Systems/Resources) | `README.md` |
