@@ -26,17 +26,26 @@ spec:
         - sh
         - -c
         - |
-          mkdir -p /store
+          mkdir -p /store-templates /store-plugins /store-config
           while read -r key dst; do
             case "$key" in ''|\#*) continue;; esac
-            mkdir -p "/store/$(dirname "$dst")"
-            cp "/cfg/$key" "/store/$dst"
+            case "$dst" in
+              templates/*) base=/store-templates; rel=${dst#templates/};;
+              plugins/*)   base=/store-plugins;   rel=${dst#plugins/};;
+              *)           base=/store-config;    rel=$dst;;
+            esac
+            mkdir -p "$base/$(dirname "$rel")"
+            cp "/cfg/$key" "$base/$rel"
           done < /cfg/layout
         volumeMounts:
         - name: backstage-templates
           mountPath: /cfg
-        - name: templates-store
-          mountPath: /store
+        - name: store-templates
+          mountPath: /store-templates
+        - name: store-plugins
+          mountPath: /store-plugins
+        - name: store-config
+          mountPath: /store-config
       containers:
       - name: backstage
         image: docker.io/guslopezc/backstage:v12
@@ -96,11 +105,11 @@ spec:
           periodSeconds: 15
         volumeMounts:
         - mountPath: /app/templates
-          name: templates-store
+          name: store-templates
         - mountPath: /app/plugins
-          name: templates-store
+          name: store-plugins
         - mountPath: /app/config
-          name: templates-store
+          name: store-config
         resources:
           requests:
             memory: 512Mi
@@ -113,5 +122,9 @@ spec:
         configMap:
           name: backstage-templates
           defaultMode: 420
-      - name: templates-store
+      - name: store-templates
+        emptyDir: {}
+      - name: store-plugins
+        emptyDir: {}
+      - name: store-config
         emptyDir: {}
