@@ -15,6 +15,11 @@ kubernetesResources:
   annotationPrefix: terasky.backstage.io
   concurrency: 10
 
+integrations:
+  github:
+    - host: github.com
+      token: ${GITHUB_TOKEN}
+
 catalog:
   locations:
     # Local entity files

@@ -31,8 +31,8 @@ spec:
         grupo:
           title: Grupo / equipo propietario
           type: string
-          description: 'Ej: dev'
-          default: dev
+          description: 'Ej: development'
+          default: development
   steps:
     - id: fetch
       name: Scaffold del repositorio
@@ -70,7 +70,7 @@ spec:
       name: Registrar en el catalogo Backstage
       action: catalog:register
       input:
-        catalogInfoUrl: https://github.com/gusLopezC-DevOps/${{ parameters.repoName }}/blob/main/catalog-info.yaml
+        catalogInfoUrl: https://raw.githubusercontent.com/gusLopezC-DevOps/${{ parameters.repoName }}/main/catalog-info.yaml
   output:
     links:
       - title: Repositorio
