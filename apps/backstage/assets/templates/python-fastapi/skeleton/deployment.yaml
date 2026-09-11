@@ -5,6 +5,7 @@ metadata:
   namespace: ${{ values.repoName }}
   labels:
     app: ${{ values.repoName }}
+    backstage.io/kubernetes-id: ${{ values.repoName }}
 spec:
   replicas: 1
   selector:
@@ -14,6 +15,7 @@ spec:
     metadata:
       labels:
         app: ${{ values.repoName }}
+        backstage.io/kubernetes-id: ${{ values.repoName }}
     spec:
       containers:
         - name: app

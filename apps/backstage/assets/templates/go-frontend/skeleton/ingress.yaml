@@ -3,6 +3,9 @@ kind: Ingress
 metadata:
   name: ${{ values.repoName }}
   namespace: ${{ values.repoName }}
+  labels:
+    app: ${{ values.repoName }}
+    backstage.io/kubernetes-id: ${{ values.repoName }}
 spec:
   ingressClassName: kong
   rules:

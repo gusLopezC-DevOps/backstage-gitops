@@ -204,6 +204,7 @@ data:
       namespace: ${{ values.repoName }}
       labels:
         app: ${{ values.repoName }}
+        backstage.io/kubernetes-id: ${{ values.repoName }}
     spec:
       replicas: 1
       selector:
@@ -213,6 +214,7 @@ data:
         metadata:
           labels:
             app: ${{ values.repoName }}
+            backstage.io/kubernetes-id: ${{ values.repoName }}
         spec:
           containers:
             - name: app
@@ -244,6 +246,9 @@ data:
     metadata:
       name: ${{ values.repoName }}
       namespace: ${{ values.repoName }}
+      labels:
+        app: ${{ values.repoName }}
+        backstage.io/kubernetes-id: ${{ values.repoName }}
     spec:
       ingressClassName: kong
       rules:
@@ -296,6 +301,9 @@ data:
     metadata:
       name: ${{ values.repoName }}
       namespace: ${{ values.repoName }}
+      labels:
+        app: ${{ values.repoName }}
+        backstage.io/kubernetes-id: ${{ values.repoName }}
     spec:
       selector:
         app: ${{ values.repoName }}
@@ -535,6 +543,7 @@ data:
       namespace: ${{ values.repoName }}
       labels:
         app: ${{ values.repoName }}
+        backstage.io/kubernetes-id: ${{ values.repoName }}
     spec:
       replicas: 1
       selector:
@@ -544,6 +553,7 @@ data:
         metadata:
           labels:
             app: ${{ values.repoName }}
+            backstage.io/kubernetes-id: ${{ values.repoName }}
         spec:
           containers:
             - name: app
@@ -571,6 +581,9 @@ data:
     metadata:
       name: ${{ values.repoName }}
       namespace: ${{ values.repoName }}
+      labels:
+        app: ${{ values.repoName }}
+        backstage.io/kubernetes-id: ${{ values.repoName }}
     spec:
       ingressClassName: kong
       rules:
@@ -595,6 +608,9 @@ data:
     metadata:
       name: ${{ values.repoName }}
       namespace: ${{ values.repoName }}
+      labels:
+        app: ${{ values.repoName }}
+        backstage.io/kubernetes-id: ${{ values.repoName }}
     spec:
       selector:
         app: ${{ values.repoName }}

@@ -3,6 +3,9 @@ kind: Service
 metadata:
   name: ${{ values.repoName }}
   namespace: ${{ values.repoName }}
+  labels:
+    app: ${{ values.repoName }}
+    backstage.io/kubernetes-id: ${{ values.repoName }}
 spec:
   selector:
     app: ${{ values.repoName }}
