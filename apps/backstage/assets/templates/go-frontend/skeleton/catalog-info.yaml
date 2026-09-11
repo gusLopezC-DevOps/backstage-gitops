@@ -6,7 +6,8 @@ metadata:
   annotations:
     github.com/project-slug: gusLopezC-DevOps/${{ values.repoName }}
     backstage.io/kubernetes-id: ${{ values.repoName }}
-    backstage.io/techdocs-ref: dir:.
+    backstage.io/kubernetes-namespace: ${{ values.repoName }}
+    backstage.io/techdocs-ref: url:https://github.com/gusLopezC-DevOps/${{ values.repoName }}/tree/main
 spec:
   type: website
   lifecycle: production

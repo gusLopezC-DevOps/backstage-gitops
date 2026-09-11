@@ -190,7 +190,8 @@ data:
       annotations:
         github.com/project-slug: gusLopezC-DevOps/${{ values.repoName }}
         backstage.io/kubernetes-id: ${{ values.repoName }}
-        backstage.io/techdocs-ref: dir:.
+        backstage.io/kubernetes-namespace: ${{ values.repoName }}
+        backstage.io/techdocs-ref: url:https://github.com/gusLopezC-DevOps/${{ values.repoName }}/tree/main
     spec:
       type: website
       lifecycle: production
@@ -302,6 +303,22 @@ data:
         - name: http
           port: 8080
           targetPort: 8080
+  templates.go-frontend.skeleton.docs.index.md: |
+    # ${{ values.repoName }}
+    
+    Frontend en Go desplegado por Argo CD.
+    
+    - Imagen: `docker.io/guslopezc/${{ values.repoName }}`
+    - Namespace / AppProject / Application: `${{ values.repoName }}`
+    - Ingress: `https://${{ values.repoName }}.local`
+    
+    ## Health
+    
+    ```bash
+    curl https://${{ values.repoName }}.local/health
+    ```
+    
+    Documentación generada con TechDocs a partir de este repositorio.
   templates.go-frontend.skeleton.public.index.html: |
     <!DOCTYPE html>
     <html lang="es">
@@ -504,7 +521,8 @@ data:
       annotations:
         github.com/project-slug: gusLopezC-DevOps/${{ values.repoName }}
         backstage.io/kubernetes-id: ${{ values.repoName }}
-        backstage.io/techdocs-ref: dir:.
+        backstage.io/kubernetes-namespace: ${{ values.repoName }}
+        backstage.io/techdocs-ref: url:https://github.com/gusLopezC-DevOps/${{ values.repoName }}/tree/main
     spec:
       type: service
       lifecycle: production
@@ -584,6 +602,22 @@ data:
         - name: http
           port: 8000
           targetPort: 8000
+  templates.python-fastapi.skeleton.docs.index.md: |
+    # ${{ values.repoName }}
+    
+    Microservicio Python/FastAPI desplegado por Argo CD.
+    
+    - Imagen: `docker.io/guslopezc/${{ values.repoName }}`
+    - Namespace / AppProject / Application: `${{ values.repoName }}`
+    - Ingress: `https://${{ values.repoName }}.local`
+    
+    ## Health
+    
+    ```bash
+    curl https://${{ values.repoName }}.local/health
+    ```
+    
+    Documentación generada con TechDocs a partir de este repositorio.
   templates.python-fastapi.skeleton..github.workflows.ci.yml: |
     name: ci
     
@@ -936,6 +970,7 @@ data:
     templates.go-frontend.skeleton.main.go templates/go-frontend/skeleton/main.go
     templates.go-frontend.skeleton.mkdocs.yml templates/go-frontend/skeleton/mkdocs.yml
     templates.go-frontend.skeleton.service.yaml templates/go-frontend/skeleton/service.yaml
+    templates.go-frontend.skeleton.docs.index.md templates/go-frontend/skeleton/docs/index.md
     templates.go-frontend.skeleton.public.index.html templates/go-frontend/skeleton/public/index.html
     templates.go-frontend.skeleton..github.workflows.ci.yml templates/go-frontend/skeleton/.github/workflows/ci.yml
     templates.python-fastapi.template.yaml templates/python-fastapi/template.yaml
@@ -946,6 +981,7 @@ data:
     templates.python-fastapi.skeleton.ingress.yaml templates/python-fastapi/skeleton/ingress.yaml
     templates.python-fastapi.skeleton.mkdocs.yml templates/python-fastapi/skeleton/mkdocs.yml
     templates.python-fastapi.skeleton.service.yaml templates/python-fastapi/skeleton/service.yaml
+    templates.python-fastapi.skeleton.docs.index.md templates/python-fastapi/skeleton/docs/index.md
     templates.python-fastapi.skeleton..github.workflows.ci.yml templates/python-fastapi/skeleton/.github/workflows/ci.yml
     templates.python-fastapi.skeleton.app.main.py templates/python-fastapi/skeleton/app/main.py
     templates.python-fastapi.skeleton.app.requirements.txt templates/python-fastapi/skeleton/app/requirements.txt
