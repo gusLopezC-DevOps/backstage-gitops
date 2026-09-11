@@ -60,10 +60,21 @@ kubectl -n workloads exec deploy/backstage -- cat /app/config/override.yaml
     `FetchUrlReader` (no implementa `readTree`). Usar
     `backstage.io/techdocs-ref: url:https://github.com/<org>/<repo>/tree/main` en el
     skeleton y **siempre** `docs/index.md` (el `mkdocs.yml` referencia `index.md`).
+12. **Tab Kubernetes**: el backend filtra por
+    `backstage.io/kubernetes-id=<entityName>` sobre el namespace de la entidad
+    (consulta `labelSelector`). Sin ese label en deployment/pods/service/ingress
+    la API devuelve `{"items":[]}`. Todos los manifiestos de los skeletons
+    (`go-frontend`, `python-fastapi`) deben llevar el label en `metadata` y en
+    `template.metadata` del Deployment. Los `LocalDeployment` (crossplane) ya lo
+    propagan desde el claim.
+13. **Tab CI/CD**: `cicdContent` incluye el caso `isGithubActionsAvailable` →
+    `EntityGithubActionsContent` para `website` y `service`. Mostrar runs exige
+    autorización GitHub: al abrir la pestaña aparece un popup OAuth (funciona
+    también con sesión Guest); sin autorizar no hay datos.
 
 ## Valores de referencia
 
-| Imagen Backstage | `docker.io/guslopezc/backstage:v13` — repo `gusLopezC-DevOps/backstage-app`, CI `build-push` (tags por SHA + `latest` + versiones tipo `v13`) |
+| Imagen Backstage | `docker.io/guslopezc/backstage:v14` — repo `gusLopezC-DevOps/backstage-app`, CI `build-push` (tags por SHA + `latest` + versiones tipo `v14`) |
 - Bindings: pod `7007`, service ClusterIP `7007`, ingress Kong `backstage.local`.
 - BD: StatefulSet `postgres` en `workloads`.
 - CM: `backstage-templates` (generado por `gen_cm.py`).
