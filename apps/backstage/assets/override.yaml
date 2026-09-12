@@ -17,7 +17,8 @@ kubernetesResources:
 
 auth:
   providers:
-    guest: {}
+    guest:
+      dangerouslyAllowOutsideDevelopment: true
 
 integrations:
   github:
