@@ -1,0 +1,77 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: golden-path
+spec:
+  validationFailureAction: Enforce
+  rules:
+  - name: validate-deployment-labels
+    match:
+      resources:
+        kinds:
+        - Deployment
+    validate:
+      message: "Deployment must have labels 'app' and 'backstage.io/kubernetes-id' in metadata and spec.template.metadata"
+      pattern:
+        metadata:
+          labels:
+            backstage.io/kubernetes-id: "?*"
+            app: "?*"
+        spec:
+          template:
+            metadata:
+              labels:
+                backstage.io/kubernetes-id: "?*"
+                app: "?*"
+
+  - name: validate-container-golden-path
+    match:
+      resources:
+        kinds:
+        - Deployment
+    validate:
+      message: "Each container must define readinessProbe, livenessProbe, resources (requests+limits), and containerPort"
+      foreach:
+      - list: request.object.spec.template.spec.containers
+        pattern:
+          readinessProbe:
+            httpGet:
+              path: "?*"
+              port: "?*"
+          livenessProbe:
+            httpGet:
+              path: "?*"
+              port: "?*"
+          resources:
+            requests:
+              cpu: "?*"
+              memory: "?*"
+            limits:
+              cpu: "?*"
+              memory: "?*"
+          ports:
+          - containerPort: "?*"
+
+  - name: validate-service-labels
+    match:
+      resources:
+        kinds:
+        - Service
+    validate:
+      message: "Service must have label 'backstage.io/kubernetes-id'"
+      pattern:
+        metadata:
+          labels:
+            backstage.io/kubernetes-id: "?*"
+
+  - name: validate-ingress-labels
+    match:
+      resources:
+        kinds:
+        - Ingress
+    validate:
+      message: "Ingress must have label 'backstage.io/kubernetes-id'"
+      pattern:
+        metadata:
+          labels:
+            backstage.io/kubernetes-id: "?*"

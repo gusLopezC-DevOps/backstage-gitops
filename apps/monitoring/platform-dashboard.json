@@ -1,0 +1,58 @@
+{
+  "title": "Platform Health — IDP Lab",
+  "tags": ["idp", "platform", "k3s"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 0,
+  "panels": [
+    {
+      "title": "Backstage Pod — CPU Usage",
+      "type": "timeseries",
+      "gridPos": {"h": 6, "w": 6, "x": 0, "y": 0},
+      "targets": [{"expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"workloads\", pod=~\"backstage-.*\"}[5m])) by (pod)", "legendFormat": "{{pod}}"}]
+    },
+    {
+      "title": "Backstage Pod — Memory Usage",
+      "type": "timeseries",
+      "gridPos": {"h": 6, "w": 6, "x": 6, "y": 0},
+      "targets": [{"expr": "sum(container_memory_working_set_bytes{namespace=\"workloads\", pod=~\"backstage-.*\"}) by (pod)", "legendFormat": "{{pod}}"}]
+    },
+    {
+      "title": "Backstage Pod — Restarts",
+      "type": "stat",
+      "gridPos": {"h": 4, "w": 4, "x": 12, "y": 0},
+      "targets": [{"expr": "sum(kube_pod_restart_policy{namespace=\"workloads\", pod=~\"backstage-.*\"})", "legendFormat": "restarts"}]
+    },
+    {
+      "title": "PostgreSQL Pod — CPU Usage",
+      "type": "timeseries",
+      "gridPos": {"h": 6, "w": 6, "x": 0, "y": 6},
+      "targets": [{"expr": "rate(container_cpu_usage_seconds_total{namespace=\"workloads\", pod=~\"postgres-.*\"}[5m])", "legendFormat": "postgres"}]
+    },
+    {
+      "title": "PostgreSQL Pod — Memory Usage",
+      "type": "timeseries",
+      "gridPos": {"h": 6, "w": 6, "x": 6, "y": 6},
+      "targets": [{"expr": "container_memory_working_set_bytes{namespace=\"workloads\", pod=~\"postgres-.*\"}", "legendFormat": "postgres"}]
+    },
+    {
+      "title": "Node CPU Utilization",
+      "type": "gauge",
+      "gridPos": {"h": 6, "w": 4, "x": 12, "y": 4},
+      "targets": [{"expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)", "legendFormat": "{{instance}}"}]
+    },
+    {
+      "title": "Available Deployments",
+      "type": "stat",
+      "gridPos": {"h": 4, "w": 4, "x": 0, "y": 12},
+      "targets": [{"expr": "count(kube_deployment_status_replicas_available{namespace!=\"\"} == 1)", "legendFormat": "available"}]
+    },
+    {
+      "title": "Golden Path — Page Load Latency",
+      "type": "stat",
+      "gridPos": {"h": 4, "w": 6, "x": 4, "y": 12},
+      "targets": [{"expr": "0", "legendFormat": "manual (see probes)"}],
+      "description": "See golden-path-report.json for latest measurements: catalog ~5s, techdocs ~10s, entity ~5s, k8s ~5s"
+    }
+  ]
+}
