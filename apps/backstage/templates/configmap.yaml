@@ -22,6 +22,10 @@ data:
       annotationPrefix: terasky.backstage.io
       concurrency: 10
     
+    auth:
+      providers:
+        guest: {}
+    
     integrations:
       github:
         - host: github.com
