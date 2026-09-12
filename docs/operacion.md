@@ -70,11 +70,21 @@ kubectl -n workloads exec deploy/backstage -- cat /app/config/override.yaml
 13. **Tab CI/CD**: `cicdContent` incluye el caso `isGithubActionsAvailable` →
     `EntityGithubActionsContent` para `website` y `service`. Mostrar runs exige
     autorización GitHub: al abrir la pestaña aparece un popup OAuth (funciona
-    también con sesión Guest); sin autorizar no hay datos.
+    también con sesión Guest); sin autorizar no hay datos (el plugin muestra
+    "GitHub Actions enabled, but no data was found").
+14. **Sign-in Guest**: el portal permite entrar como Guest (sin credenciales).
+    `auth.providers.guest` en producción requiere
+    `dangerouslyAllowOutsideDevelopment: true` (si no, el backend responde 403
+    en `/api/auth/guest/refresh`). El front (`App.tsx`) usa el multisign-in
+    `providers={['guest', {id:'github-auth-provider', ...}]}`; GitHub sigue
+    disponible para el tab CI/CD.
+15. **TechDocs primer load**: la pestaña Docs genera el build on-demand; los
+    primeros `/api/techdocs/static/.../index.html` y `/metadata/techdocs`
+    devuelven 404 mientras construye y luego 200 (no es un fallo de render).
 
 ## Valores de referencia
 
-| Imagen Backstage | `docker.io/guslopezc/backstage:v14` — repo `gusLopezC-DevOps/backstage-app`, CI `build-push` (tags por SHA + `latest` + versiones tipo `v14`) |
+| Imagen Backstage | `docker.io/guslopezc/backstage:v15` — repo `gusLopezC-DevOps/backstage-app`, CI `build-push` (tags por SHA + `latest` + versiones tipo `v15`) |
 - Bindings: pod `7007`, service ClusterIP `7007`, ingress Kong `backstage.local`.
 - BD: StatefulSet `postgres` en `workloads`.
 - CM: `backstage-templates` (generado por `gen_cm.py`).
