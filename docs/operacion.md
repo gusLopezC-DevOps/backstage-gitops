@@ -81,10 +81,19 @@ kubectl -n workloads exec deploy/backstage -- cat /app/config/override.yaml
 15. **TechDocs primer load**: la pestaña Docs genera el build on-demand; los
     primeros `/api/techdocs/static/.../index.html` y `/metadata/techdocs`
     devuelven 404 mientras construye y luego 200 (no es un fallo de render).
+16. **Reset CSS MUI (layout roto)**: si el front queda "descuadrado" con tabla
+    descuadrada, contenido corrido a la derecha (~220-260px fuera de pantalla)
+    y scroll horizontal (flechas), es que el reset global de MUI nunca se
+    monta: sin `<CssBaseline />` en `packages/app/src/App.tsx`, el
+    `MuiCssBaseline` del tema (box-sizing border-box, `body{margin:0}`, y los
+    `overflowX:hidden` del theme custom) no se inyecta. Con `box-sizing:
+    content-box` el wrapper del sidebar reserva 224px encima de su width total
+    → overflow horizontal en TODAS las páginas. Solución: montar
+    `<CssBaseline />` como primer hijo del root de la app.
 
 ## Valores de referencia
 
-| Imagen Backstage | `docker.io/guslopezc/backstage:v15` — repo `gusLopezC-DevOps/backstage-app`, CI `build-push` (tags por SHA + `latest` + versiones tipo `v15`) |
+| Imagen Backstage | `docker.io/guslopezc/backstage:v16` — repo `gusLopezC-DevOps/backstage-app`, CI `build-push` (tags por SHA + `latest` + versiones tipo `v16`) |
 - Bindings: pod `7007`, service ClusterIP `7007`, ingress Kong `backstage.local`.
 - BD: StatefulSet `postgres` en `workloads`.
 - CM: `backstage-templates` (generado por `gen_cm.py`).
