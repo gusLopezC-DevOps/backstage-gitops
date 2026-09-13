@@ -90,10 +90,39 @@ kubectl -n workloads exec deploy/backstage -- cat /app/config/override.yaml
     content-box` el wrapper del sidebar reserva 224px encima de su width total
     → overflow horizontal en TODAS las páginas. Solución: montar
     `<CssBaseline />` como primer hijo del root de la app.
+17. **El tab Kyverno devuelve 403 "Failed to fetch workloads: Forbidden"**: el
+    plugin `@terasky/backstage-plugin-kyverno-policy-reports` (frontend v1.18.0 /
+    backend v1.17.0, latest) trunca el entity del catálogo a
+    `{entity:{metadata}}` antes de llamar a su API (`getPolicyReports`), y su
+    backend lo reenvía a `POST /api/kubernetes/services/<name>` con ese entity
+    sin `kind`/`apiVersion`. El route `/services/:serviceId` de kubernetes-backend
+    llama a `stringifyEntityRef(requestBody.entity)`, que al no tener `kind`
+    lanza TypeError → `NotAllowedError("Invalid entity reference")` → 403
+    (body de 166 bytes exactos). Por eso el tab **Kubernetes nativo funciona**
+    (manda el entity completo) y el de Kyverno no. Fix que aplicamos: fork de
+    los dos componentes (`KyvernoOverviewCard`, `KyvernoPolicyReportsTable`) en
+    `packages/app/src/components/kyverno/` (Apache 2.0) enviando
+    `getPolicyReports({ entity })` con el entity íntegro, y registro de un
+    `kyvernoApiRef` propio (`app.kyverno.api`) en `apis.ts`. **Si se actualiza
+    el plugin, revisar primero si upstream ya corrige el serializado del entity.**
+18. **El recovery del 403 de Kyverno por byte-count**: el error handler de
+    Backstage serializa `{error, request:{method,url:req.url}, response:{
+    statusCode}}` (sin prefijo `/api/<plugin>` en `url`). Comparar los bytes
+    exactos del body de error contra el esperado (p. ej. 166 bytes
+    `NotAllowedError`) permite confirmar qué route y qué throw originaron la
+    respuesta sin abrir el bundle.
+19. **Dashboard de Grafana vía sidecar**: los CM con label
+    `grafana_dashboard: "1"` se copian solos a `/tmp/dashboards` del container
+    `grafana-sc-dashboard` y el provider file los carga (~30s). El login de
+    Grafana NO acepta basic-auth de la API con las credenciales del secret
+    (admin/admin da 401 en `/api/search`): validar el provisionado leyendo el
+    fichero dentro del sidecar (o navegando), no por la API. Métrica correcta
+    de restarts: `kube_pod_container_status_restarts_total` (no
+    `kube_pod_restart_policy`, que es un string en formato binario).
 
 ## Valores de referencia
 
-| Imagen Backstage | `docker.io/guslopezc/backstage:v16` — repo `gusLopezC-DevOps/backstage-app`, CI `build-push` (tags por SHA + `latest` + versiones tipo `v16`) |
+| Imagen Backstage | `docker.io/guslopezc/backstage:v18` — repo `gusLopezC-DevOps/backstage-app`, CI `build-push` (tags por SHA + `latest` + versiones tipo `v16`) |
 - Bindings: pod `7007`, service ClusterIP `7007`, ingress Kong `backstage.local`.
 - BD: StatefulSet `postgres` en `workloads`.
 - CM: `backstage-templates` (generado por `gen_cm.py`).
