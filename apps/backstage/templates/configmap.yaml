@@ -23,9 +23,13 @@ data:
       concurrency: 10
     
     auth:
-      providers:
-        guest:
-          dangerouslyAllowOutsideDevelopment: true
+      providers: {}
+    
+    proxy:
+      endpoints:
+        /opencost:
+          target: http://opencost.opencost.svc.cluster.local:9003
+          changeOrigin: true
     
     integrations:
       github:

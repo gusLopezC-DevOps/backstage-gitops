@@ -30,3 +30,11 @@ spec:
     ports:
     - protocol: TCP
       port: 5432
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: opencost
+    - podSelector: {}
+    ports:
+    - protocol: TCP
+      port: 9003
