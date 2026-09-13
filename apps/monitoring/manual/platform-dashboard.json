@@ -21,7 +21,7 @@
       "title": "Backstage Pod — Restarts",
       "type": "stat",
       "gridPos": {"h": 4, "w": 4, "x": 12, "y": 0},
-      "targets": [{"expr": "sum(kube_pod_restart_policy{namespace=\"workloads\", pod=~\"backstage-.*\"})", "legendFormat": "restarts"}]
+      "targets": [{"expr": "sum(increase(kube_pod_container_status_restarts_total{namespace=\"workloads\", pod=~\"backstage-.*\"}[5m]))", "legendFormat": "restarts"}]
     },
     {
       "title": "PostgreSQL Pod — CPU Usage",
