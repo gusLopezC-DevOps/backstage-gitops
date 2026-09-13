@@ -119,6 +119,14 @@ kubectl -n workloads exec deploy/backstage -- cat /app/config/override.yaml
     fichero dentro del sidecar (o navegando), no por la API. Métrica correcta
     de restarts: `kube_pod_container_status_restarts_total` (no
     `kube_pod_restart_policy`, que es un string en formato binario).
+20. **SealedSecrets en DR: la private key NO se respalda y al re-construir el
+    clúster se pierde** → los valores sellados (`postgres-sealed`) no se
+    descifran en el clúster nuevo (el controller genera key nueva). Procedimiento
+    (ver `docs/runbook-dr.md` §Phase 5): re-sellar con el cert nuevo y
+    **versionar el SealedSecret re-sellado**, si no el siguiente sync de Argo
+    restaura el valor viejo (indescifrable) y el workload queda roto. Irónico
+    pero importante: el DR necesita re-sellar + commit para quedar funcional,
+    no basta con aplicar git.
 
 ## Valores de referencia
 
