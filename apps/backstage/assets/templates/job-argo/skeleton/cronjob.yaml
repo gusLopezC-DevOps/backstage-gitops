@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ${{ values.repoName }}
+  namespace: ${{ values.repoName }}
+  labels:
+    app: ${{ values.repoName }}
+    backstage.io/kubernetes-id: ${{ values.repoName }}
+spec:
+  schedule: "${{ values.schedule }}"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: app
+              image: docker.io/guslopezc/${{ values.repoName }}:ci

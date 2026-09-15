@@ -57,3 +57,18 @@ catalog:
       target: /app/templates/go-frontend/template.yaml
       rules:
         - allow: [Template]
+
+    - type: file
+      target: /app/templates/go-api/template.yaml
+      rules:
+        - allow: [Template]
+
+    - type: file
+      target: /app/templates/node-api/template.yaml
+      rules:
+        - allow: [Template]
+
+    - type: file
+      target: /app/templates/job-argo/template.yaml
+      rules:
+        - allow: [Template]

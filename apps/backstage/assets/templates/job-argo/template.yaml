@@ -1,0 +1,90 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: job-argo
+  title: Go Job / CronJob
+  description: Crea un job en Go que se ejecuta como CronJob en Kubernetes y se registra en Argo CD de forma manual (sync manual, sin selfHeal)
+  tags:
+    - go
+    - golang
+    - job
+    - cronjob
+    - docker
+    - argocd
+  annotations:
+    github.com/project-slug: gusLopezC-DevOps/backstage-entities
+spec:
+  owner: development
+  type: service
+  parameters:
+    - title: Proyecto
+      required:
+        - repoName
+        - description
+      properties:
+        repoName:
+          title: Nombre del workload (repo + namespace + AppProject + Application)
+          type: string
+          description: 'Minusculas y guiones. Ej: mi-job'
+        description:
+          title: Descripcion
+          type: string
+        grupo:
+          title: Grupo / equipo propietario
+          type: string
+          description: 'Ej: development'
+          default: development
+        schedule:
+          title: Cron schedule
+          type: string
+          description: 'Expresion cron. Ej: 0 */6 * * * (cada 6h)'
+          default: '0 */6 * * *'
+  steps:
+    - id: fetch
+      name: Scaffold del repositorio
+      action: fetch:template
+      input:
+        url: ./skeleton
+        targetPath: ./workload
+        values:
+          repoName: ${{ parameters.repoName }}
+          description: ${{ parameters.description }}
+          grupo: ${{ parameters.grupo }}
+          schedule: ${{ parameters.schedule }}
+    - id: publish
+      name: Crear repositorio en GitHub
+      action: publish:github
+      input:
+        repoUrl: github.com?owner=gusLopezC-DevOps&repo=${{ parameters.repoName }}
+        repoVisibility: public
+        defaultBranch: main
+        sourcePath: workload
+        description: ${{ parameters.description }}
+        gitCommitMessage: Initial scaffold from Backstage + Argo CD
+    - id: alta
+      name: Registrar workload en el plano de control (PR)
+      action: github:actions:dispatch
+      input:
+        repoUrl: github.com?owner=gusLopezC-DevOps&repo=control-plane
+        workflowId: workflow-alta-pr.yml
+        branchOrTagName: main
+        workflowInputs:
+          nombre: ${{ parameters.repoName }}
+          repositorio: https://github.com/gusLopezC-DevOps/${{ parameters.repoName }}.git
+          grupo: ${{ parameters.grupo }}
+          arquetipo: job
+    - id: register
+      name: Registrar en el catalogo Backstage
+      action: catalog:register
+      input:
+        catalogInfoUrl: https://raw.githubusercontent.com/gusLopezC-DevOps/${{ parameters.repoName }}/main/catalog-info.yaml
+  output:
+    links:
+      - title: Repositorio
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: PR en el plano de control
+        url: https://github.com/gusLopezC-DevOps/control-plane/pulls
+      - title: ArgoCD
+        url: https://argocd.local/applications/${{ parameters.repoName }}
+      - title: Catalogo Backstage
+        url: https://backstage.local/catalog/default/component/${{ parameters.repoName }}
