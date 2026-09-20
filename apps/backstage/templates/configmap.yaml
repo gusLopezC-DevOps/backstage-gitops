@@ -79,6 +79,22 @@ data:
           target: /app/templates/job-argo/template.yaml
           rules:
             - allow: [Template]
+    
+        # MLOps templates (source of truth: control-plane repo)
+        - type: url
+          target: https://github.com/gusLopezC-DevOps/control-plane/blob/main/backstage-templates/cognitive-safe-llm-service/template.yaml
+          rules:
+            - allow: [Template]
+    
+        - type: url
+          target: https://github.com/gusLopezC-DevOps/control-plane/blob/main/backstage-templates/llm-canary-eval-pipeline/template.yaml
+          rules:
+            - allow: [Template]
+    
+        - type: url
+          target: https://github.com/gusLopezC-DevOps/control-plane/blob/main/backstage-templates/finops-arbitrage-router/template.yaml
+          rules:
+            - allow: [Template]
 
   plugins.custom-actions.cjs.js: |
     'use strict';
