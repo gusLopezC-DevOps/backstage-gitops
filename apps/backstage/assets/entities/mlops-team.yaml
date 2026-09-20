@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: mlops-team
+  description: MLOps / LLMOps platform team
+spec:
+  type: team
+  profile:
+    displayName: MLOps Team
+    email: mlops@example.com
+  children: []

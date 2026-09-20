@@ -42,6 +42,12 @@ catalog:
       rules:
         - allow: [Group]
 
+    # Extra org groups shipped via the ConfigMap (source: assets/entities)
+    - type: file
+      target: /app/config/entities/mlops-team.yaml
+      rules:
+        - allow: [Group]
+
     # Local software templates
     - type: file
       target: /app/templates/python-fastapi/template.yaml

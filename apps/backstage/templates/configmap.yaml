@@ -49,6 +49,12 @@ data:
           rules:
             - allow: [Group]
     
+        # Extra org groups shipped via the ConfigMap (source: assets/entities)
+        - type: file
+          target: /app/config/entities/mlops-team.yaml
+          rules:
+            - allow: [Group]
+    
         # Local software templates
         - type: file
           target: /app/templates/python-fastapi/template.yaml
@@ -110,6 +116,19 @@ data:
           target: https://github.com/gusLopezC-DevOps/control-plane/blob/main/backstage-templates/fine-tuning-pipeline/template.yaml
           rules:
             - allow: [Template]
+
+  entities.mlops-team.yaml: |
+    apiVersion: backstage.io/v1alpha1
+    kind: Group
+    metadata:
+      name: mlops-team
+      description: MLOps / LLMOps platform team
+    spec:
+      type: team
+      profile:
+        displayName: MLOps Team
+        email: mlops@example.com
+      children: []
 
   plugins.custom-actions.cjs.js: |
     'use strict';
@@ -1997,6 +2016,7 @@ data:
             url: https://backstage.local/catalog/default/component/${{ parameters.repoName }}
 
   layout: |
+    entities.mlops-team.yaml entities/mlops-team.yaml
     override.yaml override.yaml
     plugins.custom-actions.cjs.js plugins/custom-actions.cjs.js
     templates.go-api.skeleton..dockerignore templates/go-api/skeleton/.dockerignore
