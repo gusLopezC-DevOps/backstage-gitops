@@ -95,6 +95,21 @@ data:
           target: https://github.com/gusLopezC-DevOps/control-plane/blob/main/backstage-templates/finops-arbitrage-router/template.yaml
           rules:
             - allow: [Template]
+    
+        - type: url
+          target: https://github.com/gusLopezC-DevOps/control-plane/blob/main/backstage-templates/llm-inference-service/template.yaml
+          rules:
+            - allow: [Template]
+    
+        - type: url
+          target: https://github.com/gusLopezC-DevOps/control-plane/blob/main/backstage-templates/rag-application/template.yaml
+          rules:
+            - allow: [Template]
+    
+        - type: url
+          target: https://github.com/gusLopezC-DevOps/control-plane/blob/main/backstage-templates/fine-tuning-pipeline/template.yaml
+          rules:
+            - allow: [Template]
 
   plugins.custom-actions.cjs.js: |
     'use strict';

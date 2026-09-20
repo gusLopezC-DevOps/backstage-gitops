@@ -1,16 +1,25 @@
 #!/usr/bin/env python3
 """Genera el ConfigMap backstage-templates a partir de assets/.
 
+Ademas, inyecta un checksum sha256 del ConfigMap como annotation en el pod
+template del Deployment de Backstage, de modo que cualquier cambio en assets/
+(y por tanto en el CM) cambie el Deployment y Argo CD haga el rollout de forma
+automatica, sin `kubectl rollout restart` manual.
+
 Uso:
     python3 scripts/gen_cm.py
 """
 
+import hashlib
 import pathlib
+import re
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 ASSETS = ROOT / "apps/backstage/assets"
 OUT = ROOT / "apps/backstage/templates/configmap.yaml"
+DEPLOYMENT = ROOT / "apps/backstage/deployment.yaml"
+CHECKSUM_ANNOTATION = "backstage.guslopez.dev/config-checksum"
 
 
 def encode_key(rel: str) -> str:
@@ -60,8 +69,21 @@ def main() -> None:
     # -- layout (key → mount path inside the pod) ------------------------------------
     add_block("layout", "\n".join(f"{encode_key(rel)} {rel}" for rel, _ in files))
 
-    OUT.write_text("\n".join(lines) + "\n")
+    cm_text = "\n".join(lines) + "\n"
+    OUT.write_text(cm_text)
+
+    # -- checksum -> Deployment annotation (triggers Argo CD rollout on CM change) ----
+    checksum = hashlib.sha256(cm_text.encode()).hexdigest()
+    deployment = DEPLOYMENT.read_text()
+    pattern = re.compile(rf'({re.escape(CHECKSUM_ANNOTATION)}:\s*")[^"]*(")')
+    if not pattern.search(deployment):
+        print(f"ERROR: '{CHECKSUM_ANNOTATION}' annotation not found in {DEPLOYMENT}",
+              file=sys.stderr)
+        sys.exit(1)
+    DEPLOYMENT.write_text(pattern.sub(rf'\g<1>sha256:{checksum}\g<2>', deployment))
+
     print(f"OK  {OUT}  ({len(files)} files)")
+    print(f"OK  {DEPLOYMENT}  checksum={checksum[:12]}…")
 
 
 if __name__ == "__main__":

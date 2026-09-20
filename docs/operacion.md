@@ -20,9 +20,9 @@ kubectl -n workloads exec deploy/backstage -- cat /app/config/override.yaml
 | Tarea | Comando |
 |---|---|
 | Sincronizar Argo | API/UI de `argocd.local` → app → Sync (o force-sync de `backstage-gitops`/`root-app`) |
-| Cambiar un template/override/plugin | `gen_cm.py` → push → sync → `rollout restart deploy/backstage` |
+| Cambiar un template/override/plugin | `gen_cm.py` → push → sync. El checksum inyectado en el Deployment dispara el rollout solo (Argo CD): **no** hace falta `rollout restart` |
 | Publicar nueva imagen de Backstage | push a `backstage-app` (CI build+push Docker Hub) → bump tag en `apps/backstage/deployment.yaml` → sync → rollout |
-| Reiniciar Backstage (BD volcada, plugin) | `kubectl -n workloads rollout restart deploy/backstage` |
+| Reiniciar Backstage (solo emergencia: BD volcada, plugin colgado) | `kubectl -n workloads rollout restart deploy/backstage` |
 | Ver logs | `kubectl -n workloads logs deploy/backstage --tail=300 -f` |
 | DNS clientes | `/etc/hosts`: `192.168.100.77 <host>.local` |
 | Inspeccionar catálogo | psql a `backstage_plugin_catalog` (ver `catalogo.md`) |
@@ -44,15 +44,21 @@ kubectl -n workloads exec deploy/backstage -- cat /app/config/override.yaml
 2. **Merge de Backstage reemplaza arrays**.
    `catalog.locations`/`integrations` se definen completos en el override; nada de
    "añadir uno más" desde la imagen.
-3. **catalog:register headless no es posible** sin sesión OAuth. Usar siempra
-   `catalogInfoUrl` raw.
+3. **`catalog:register` en los templates está prohibido**: el paso recibía
+   `${{ parameters.repoContentsUrl }}` (parámetro inexistente) → `InputError:
+   Invalid input passed to action catalog:register`. Los templates **no** se
+   autorregistran; el catálogo indexa de forma pasiva vía las `type: url` de
+   `assets/override.yaml`.
 4. **`blob→tree` rompe el refresh** del catálogo: la URL estable es `raw`.
 5. **Los header de PR con viñetas** fallaban el body → body en una sola línea.
 6. **`directory.exclude: catalog-info.yaml`** debe ir como **string glob** en el
    CRD de Argo (no un array).
 7. **Secretos de org no llegan a repos privados** → workloads públicos.
-8. **El sincronismo CM↔rollout**: a veces un rollout coge el CM viejo
-   (sync de Argo aún aplicando). Reintentar el rollout y verificar el fichero.
+8. **CM↔rollout automático por checksum**: `gen_cm.py` inyecta
+   `backstage.guslopez.dev/config-checksum` (sha256 del ConfigMap) en el pod
+   template del Deployment. Al cambiar `assets/`, cambian el CM y el annotation
+   → Argo CD hace el rollout **sin** `kubectl rollout restart`. No editar ese
+   annotation a mano: lo regenera el script.
 9. **`kubectl` del nodo pide fingerprint/PAM** (sudo): usar
    `echo 'plusultra' | sudo -S -p '' kubectl …` y colgar tiempo.
 10. **TLS de Kong es `CN=localhost`** (sin SAN): advertencia del navegador, no bloquea.
@@ -130,7 +136,7 @@ kubectl -n workloads exec deploy/backstage -- cat /app/config/override.yaml
 
 ## Valores de referencia
 
-| Imagen Backstage | `docker.io/guslopezc/backstage:v18` — repo `gusLopezC-DevOps/backstage-app`, CI `build-push` (tags por SHA + `latest` + versiones tipo `v16`) |
+| Imagen Backstage | `docker.io/guslopezc/backstage:v20` — repo `gusLopezC-DevOps/backstage-app`, CI `build-push` (tags por SHA + `latest` + versiones tipo `v20`) |
 - Bindings: pod `7007`, service ClusterIP `7007`, ingress Kong `backstage.local`.
 - BD: StatefulSet `postgres` en `workloads`.
 - CM: `backstage-templates` (generado por `gen_cm.py`).
