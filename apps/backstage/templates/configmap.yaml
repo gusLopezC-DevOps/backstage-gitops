@@ -101,6 +101,11 @@ data:
           target: https://github.com/gusLopezC-DevOps/control-plane/blob/main/backstage-templates/finops-arbitrage-router/template.yaml
           rules:
             - allow: [Template]
+
+        - type: url
+          target: https://github.com/gusLopezC-DevOps/control-plane/blob/main/backstage-templates/managed-llm-service/template.yaml
+          rules:
+            - allow: [Template]
     
         # Legacy templates (llm-inference-service, rag-application,
         # fine-tuning-pipeline) are deprecated: they target shared namespaces
