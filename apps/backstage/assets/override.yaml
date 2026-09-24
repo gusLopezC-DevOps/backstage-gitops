@@ -16,7 +16,8 @@ kubernetesResources:
   concurrency: 10
 
 auth:
-  providers: {}
+  providers:
+    guest: {}
 
 proxy:
   endpoints:
