@@ -3,6 +3,7 @@ name: ci
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -33,7 +34,9 @@ jobs:
         with:
           context: .
           push: true
-          tags: docker.io/guslopezc/${{ values.repoName }}:${{ '${{ github.sha }}' }}
+          tags: |
+            docker.io/guslopezc/${{ values.repoName }}:${{ '${{ github.sha }}' }}
+            docker.io/guslopezc/${{ values.repoName }}:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -46,5 +49,8 @@ jobs:
           if git diff --cached --quiet; then
             echo 'imagen sin cambios'
           else
-            git commit -m 'ci: bump imagen' && git push
+            git commit -m 'ci: bump imagen'
+            if ! git push; then
+              echo "::warning::main protegido, el bot no pudo actualizar el manifest; el Deployment sigue en :ci con imagePullPolicy Always"
+            fi
           fi

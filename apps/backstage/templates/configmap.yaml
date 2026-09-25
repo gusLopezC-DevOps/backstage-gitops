@@ -314,6 +314,7 @@ data:
     on:
       push:
         branches: [main]
+      workflow_dispatch:
     
     permissions:
       contents: write
@@ -344,7 +345,9 @@ data:
             with:
               context: .
               push: true
-              tags: docker.io/guslopezc/${{ values.repoName }}:${{ '${{ github.sha }}' }}
+              tags: |
+                docker.io/guslopezc/${{ values.repoName }}:${{ '${{ github.sha }}' }}
+                docker.io/guslopezc/${{ values.repoName }}:ci
               cache-from: type=gha
               cache-to: type=gha,mode=max
     
@@ -357,7 +360,10 @@ data:
               if git diff --cached --quiet; then
                 echo 'imagen sin cambios'
               else
-                git commit -m 'ci: bump imagen' && git push
+                git commit -m 'ci: bump imagen'
+                if ! git push; then
+                  echo "::warning::main protegido, el bot no pudo actualizar el manifest; el Deployment sigue en :ci con imagePullPolicy Always"
+                fi
               fi
 
   templates.go-api.skeleton.Dockerfile: |
@@ -435,6 +441,7 @@ data:
           containers:
             - name: app
               image: docker.io/guslopezc/${{ values.repoName }}:ci
+              imagePullPolicy: Always
               ports:
                 - containerPort: 8080
               readinessProbe:
@@ -659,6 +666,7 @@ data:
     on:
       push:
         branches: [main]
+      workflow_dispatch:
     
     permissions:
       contents: write
@@ -689,7 +697,9 @@ data:
             with:
               context: .
               push: true
-              tags: docker.io/guslopezc/${{ values.repoName }}:${{ '${{ github.sha }}' }}
+              tags: |
+                docker.io/guslopezc/${{ values.repoName }}:${{ '${{ github.sha }}' }}
+                docker.io/guslopezc/${{ values.repoName }}:ci
               cache-from: type=gha
               cache-to: type=gha,mode=max
     
@@ -702,7 +712,10 @@ data:
               if git diff --cached --quiet; then
                 echo 'imagen sin cambios'
               else
-                git commit -m 'ci: bump imagen' && git push
+                git commit -m 'ci: bump imagen'
+                if ! git push; then
+                  echo "::warning::main protegido, el bot no pudo actualizar el manifest; el Deployment sigue en :ci con imagePullPolicy Always"
+                fi
               fi
 
   templates.go-frontend.skeleton.Dockerfile: |
@@ -781,6 +794,7 @@ data:
           containers:
             - name: app
               image: docker.io/guslopezc/${{ values.repoName }}:ci
+              imagePullPolicy: Always
               ports:
                 - containerPort: 8080
               readinessProbe:
@@ -1016,6 +1030,7 @@ data:
     on:
       push:
         branches: [main]
+      workflow_dispatch:
     
     permissions:
       contents: write
@@ -1046,7 +1061,9 @@ data:
             with:
               context: .
               push: true
-              tags: docker.io/guslopezc/${{ values.repoName }}:${{ '${{ github.sha }}' }}
+              tags: |
+                docker.io/guslopezc/${{ values.repoName }}:${{ '${{ github.sha }}' }}
+                docker.io/guslopezc/${{ values.repoName }}:ci
               cache-from: type=gha
               cache-to: type=gha,mode=max
     
@@ -1059,7 +1076,10 @@ data:
               if git diff --cached --quiet; then
                 echo 'imagen sin cambios'
               else
-                git commit -m 'ci: bump imagen' && git push
+                git commit -m 'ci: bump imagen'
+                if ! git push; then
+                  echo "::warning::main protegido, el bot no pudo actualizar el manifest; el CronJob sigue en :ci con imagePullPolicy Always"
+                fi
               fi
 
   templates.job-argo.skeleton.Dockerfile: |
@@ -1132,6 +1152,7 @@ data:
               containers:
                 - name: app
                   image: docker.io/guslopezc/${{ values.repoName }}:ci
+                  imagePullPolicy: Always
 
   templates.job-argo.skeleton.docs.index.md: |
     # ${{ values.repoName }}
@@ -1382,6 +1403,7 @@ data:
     on:
       push:
         branches: [main]
+      workflow_dispatch:
     
     permissions:
       contents: write
@@ -1412,7 +1434,9 @@ data:
             with:
               context: .
               push: true
-              tags: docker.io/guslopezc/${{ values.repoName }}:${{ '${{ github.sha }}' }}
+              tags: |
+                docker.io/guslopezc/${{ values.repoName }}:${{ '${{ github.sha }}' }}
+                docker.io/guslopezc/${{ values.repoName }}:ci
               cache-from: type=gha
               cache-to: type=gha,mode=max
     
@@ -1425,7 +1449,10 @@ data:
               if git diff --cached --quiet; then
                 echo 'imagen sin cambios'
               else
-                git commit -m 'ci: bump imagen' && git push
+                git commit -m 'ci: bump imagen'
+                if ! git push; then
+                  echo "::warning::main protegido, el bot no pudo actualizar el manifest; el Deployment sigue en :ci con imagePullPolicy Always"
+                fi
               fi
 
   templates.node-api.skeleton.Dockerfile: |
@@ -1501,6 +1528,7 @@ data:
           containers:
             - name: app
               image: docker.io/guslopezc/${{ values.repoName }}:ci
+              imagePullPolicy: Always
               ports:
                 - containerPort: 3000
               readinessProbe:
@@ -1710,6 +1738,7 @@ data:
     on:
       push:
         branches: [main]
+      workflow_dispatch:
     
     permissions:
       contents: write
@@ -1733,7 +1762,9 @@ data:
             with:
               context: .
               push: true
-              tags: docker.io/guslopezc/${{ values.repoName }}:${{ '${{ github.sha }}' }}
+              tags: |
+                docker.io/guslopezc/${{ values.repoName }}:${{ '${{ github.sha }}' }}
+                docker.io/guslopezc/${{ values.repoName }}:ci
               cache-from: type=gha
               cache-to: type=gha,mode=max
     
@@ -1746,7 +1777,10 @@ data:
               if git diff --cached --quiet; then
                 echo 'imagen sin cambios'
               else
-                git commit -m 'ci: bump imagen' && git push
+                git commit -m 'ci: bump imagen'
+                if ! git push; then
+                  echo "::warning::main protegido, el bot no pudo actualizar el manifest; el Deployment sigue en :ci con imagePullPolicy Always"
+                fi
               fi
 
   templates.python-fastapi.skeleton.Dockerfile: |
@@ -1839,6 +1873,7 @@ data:
           containers:
             - name: app
               image: docker.io/guslopezc/${{ values.repoName }}:ci
+              imagePullPolicy: Always
               ports:
                 - containerPort: 8000
               readinessProbe:

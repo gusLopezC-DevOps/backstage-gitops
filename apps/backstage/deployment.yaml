@@ -15,7 +15,7 @@ spec:
       labels:
         app: backstage
       annotations:
-        backstage.guslopez.dev/config-checksum: "sha256:a73ce6d28ddd0b76a96d9c1ced1042f172f2de2a23aded3f046cf1fdc30a3b04"
+        backstage.guslopez.dev/config-checksum: "sha256:fe4ac9b3f926da3a6d9fb8d75dfdee0cadfda7c97bb62115602ec3c3aee60741"
     spec:
       serviceAccountName: backstage
       initContainers:
