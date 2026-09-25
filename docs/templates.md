@@ -5,8 +5,15 @@ Cada template vive en `apps/backstage/assets/templates/<nombre>/` y consta de:
 - `template.yaml` — definición `scaffolder.backstage.io/v1beta3` (inputs + steps).
 - `skeleton/` — arbol plantilla que `fetch:template`/`fetch:plain` renderiza.
 
-Los 3 templates están registrados en el catálogo vía `override.yaml`
-(`catalog.locations` → `file:/app/templates/<t>/template.yaml`).
+El catálogo registra **10 plantillas** en el `override.yaml`
+(`catalog.locations`):
+
+- **6 locales** con `type: file` → `/app/templates/<t>/template.yaml` (servidas
+  por el CM desde `assets/templates/`).
+- **4 MLOps** con `type: url` → repos `control-plane`
+  (`blob/main/backstage-templates/<t>/template.yaml`): `cognitive-safe-llm-service`,
+  `llm-canary-eval-pipeline`, `finops-arbitrage-router`, `managed-llm-service`.
+  Su fuente de verdad es el repo `control-plane`, no este CM.
 
 ```mermaid
 flowchart LR

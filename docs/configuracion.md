@@ -17,7 +17,7 @@ flowchart LR
 | Bloque | Propósito |
 |---|---|
 | `integrations.github` | Token `${GITHUB_TOKEN}` → repos privados + raw GitHub |
-| `catalog.locations` | Entidades locales (`/app/entities/{users,groups}.yaml`) y los 3 templates (`file:`) |
+| `catalog.locations` | Entidades locales (`/app/entities/{users,groups}.yaml`), los 6 templates locales (`file:`) y 4 templates MLOps por `url:` (control-plane) |
 | `kubernetes.customResources` | Modelos extra del plugin Kubernetes (`policyreports` kyverno, `localdeployments` crossplane) |
 | `kyverno.enablePermissions` | `false` (no exponer permisos hacia afuera) |
 | `kubernetesResources.enablePermissions` | `true` + `annotationPrefix: terasky.backstage.io` + concurrency |

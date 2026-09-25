@@ -136,7 +136,7 @@ kubectl -n workloads exec deploy/backstage -- cat /app/config/override.yaml
 
 ## Valores de referencia
 
-| Imagen Backstage | `docker.io/guslopezc/backstage:v20` — repo `gusLopezC-DevOps/backstage-app`, CI `build-push` (tags por SHA + `latest` + versiones tipo `v20`) |
+| Imagen Backstage | `docker.io/guslopezc/backstage:v21` — repo `gusLopezC-DevOps/backstage-app`, CI `build-push` (tags por SHA + `latest` + versiones tipo `v21`) |
 - Bindings: pod `7007`, service ClusterIP `7007`, ingress Kong `backstage.local`.
 - BD: StatefulSet `postgres` en `workloads`.
 - CM: `backstage-templates` (generado por `gen_cm.py`).

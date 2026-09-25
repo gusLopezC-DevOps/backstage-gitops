@@ -66,8 +66,10 @@ gestionamos; los dos `app-config*.yaml` vienen de la imagen. La imagen se constr
 desde el repo [gitops `gusLopezC-DevOps/backstage-app`](https://github.com/gusLopezC-DevOps/backstage-app)
 (CI `build-push`): es **runtime puro** + python/mkdocs para TechDocs, y hornea solo
 `catalog/entities/{users,groups}.yaml` (montados en `/app/entities`). **No hornea
-templates**: las 3 plantillas y la action custom (`gitops:push-to-repo`) viven en el
-CM y se montan en `/app/templates` y `/app/plugins`.
+templates**: las plantillas del scaffolder (6 locales) y la action custom
+(`gitops:push-to-repo`) viven en el CM y se montan en `/app/templates` y
+`/app/plugins`. Además el `override.yaml` registra en el catálogo 4 plantillas
+MLOps por `type: url` (fuente: repo `control-plane` → `backstage-templates/`).
 
 > **Regla de oro de Backstage (merge)**: un cambio sobre una clave con formato
 > **array reemplaza el array completo** (no lo concatena). Por eso el catálogo se

@@ -113,7 +113,7 @@ Cambios en un template/override → regenerar CM → PR/push → Argo sync → `
 | [`docs/index.md`](docs/index.md) | Mapa de documentación y repos correlacionados |
 | [`docs/proceso.md`](docs/proceso.md) | **Ciclo de vida completo** de un workload (alta → deploy → baja) |
 | [`docs/arquitectura.md`](docs/arquitectura.md) | Arquitectura del deployment, CM, initContainers, red, TLS, RBAC |
-| [`docs/templates.md`](docs/templates.md) | Las 3 templates de software (inputs, pasos, skeletons) |
+| [`docs/templates.md`](docs/templates.md) | Las plantillas de software del scaffolder (10: 6 locales + 4 MLOps; inputs, pasos, skeletons) |
 | [`docs/configuracion.md`](docs/configuracion.md) | override.yaml, secretos, merge de config de Backstage |
 | [`docs/catalogo.md`](docs/catalogo.md) | Catálogo: locations, registro, owner, limpieza |
 | [`docs/operacion.md`](docs/operacion.md) | Tareas del día a día + lecciones aprendidas |
